@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\Entity\Profile.
- */
-
 namespace Drupal\profile\Entity;
 
 use Drupal\Core\Cache\Cache;

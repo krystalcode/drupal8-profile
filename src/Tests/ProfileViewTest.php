@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\Tests\ProfileViewTest.
- */
-
 namespace Drupal\profile\Tests;
 
 use Drupal\Component\Utility\Unicode;

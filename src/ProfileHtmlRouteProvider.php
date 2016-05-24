@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\ProfileHtmlRouteProvider.
- */
-
 namespace Drupal\profile;
 
 use Drupal\Core\Entity\EntityTypeInterface;

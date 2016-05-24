@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\Form\ProfileForm.
- */
-
 namespace Drupal\profile\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;

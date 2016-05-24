@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\Tests\ProfileAttachTest.
- */
-
 namespace Drupal\profile\Tests;
 
 use Drupal\Component\Render\FormattableMarkup;

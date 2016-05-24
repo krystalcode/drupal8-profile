@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\ProfileListController.
- */
-
 namespace Drupal\profile;
 
 use Drupal\Core\Datetime\DateFormatter;

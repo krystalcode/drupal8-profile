@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\Tests\ProfileBaseTest.
- */
-
 namespace Drupal\profile\Tests;
 
 use Drupal\Core\Entity\Entity\EntityFormDisplay;

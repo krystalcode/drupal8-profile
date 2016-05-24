@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\ProfileAccessControlHandler.
- */
-
 namespace Drupal\profile;
 
 use Drupal\Core\Access\AccessResult;

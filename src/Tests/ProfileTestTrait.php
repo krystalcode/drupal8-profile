@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\ProfileTestTrait.
- */
-
 namespace Drupal\profile\Tests;
 
 use Drupal\profile\Entity\ProfileTypeInterface;

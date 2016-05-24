@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: mglaman
- * Date: 1/15/16
- * Time: 9:41 AM
- */
 
 namespace Drupal\profile\Tests;
 

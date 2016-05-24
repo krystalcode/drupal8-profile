@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\Tests\ProfileRoleAccessTest.
- */
-
 namespace Drupal\profile\Tests;
 
 /**

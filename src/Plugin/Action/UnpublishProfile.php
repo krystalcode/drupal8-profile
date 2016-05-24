@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\Plugin\Action\UnpublishProfile.
- */
-
 namespace Drupal\profile\Plugin\Action;
 
 use Drupal\Core\Action\ActionBase;

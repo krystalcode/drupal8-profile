@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\profile\Tests\ProfileFieldAccessTest.
- */
-
 namespace Drupal\profile\Tests;
 
 use Drupal\Core\Cache\Cache;
