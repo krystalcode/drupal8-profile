@@ -1,10 +1,11 @@
 <?php
 
-namespace Drupal\profile\Tests;
+namespace Drupal\Tests\profile\Kernel;
 
 use Drupal\Component\Utility\Unicode;
+use Drupal\profile\Tests\ProfileTestTrait;
+use Drupal\Tests\views\Kernel\ViewsKernelTestBase;
 use Drupal\user\Entity\User;
-use Drupal\views\Tests\ViewKernelTestBase;
 use Drupal\views\Views;
 use Drupal\views\Tests\ViewTestData;
 
@@ -13,7 +14,7 @@ use Drupal\views\Tests\ViewTestData;
  *
  * @group profile
  */
-class ProfileViewTest extends ViewKernelTestBase {
+class ProfileViewTest extends ViewsKernelTestBase {
 
   use ProfileTestTrait;
 
@@ -28,8 +29,8 @@ class ProfileViewTest extends ViewKernelTestBase {
     'users',
   ];
 
-  protected function setUp() {
-    parent::setUp();
+  protected function setUp($import_test_views = TRUE) {
+    parent::setUp($import_test_views);
 
     $this->installEntitySchema('user');
     $this->installEntitySchema('profile');
@@ -74,16 +75,16 @@ class ProfileViewTest extends ViewKernelTestBase {
 
     // Check table relationship exists.
     $views_data = Views::viewsData()->get('users_field_data');
-    $this->assertEqual($views_data['profile']['relationship']['base'], 'profile');
-    $this->assertEqual($views_data['profile']['relationship']['base field'], 'uid');
+    $this->assertEquals($views_data['profile']['relationship']['base'], 'profile');
+    $this->assertEquals($views_data['profile']['relationship']['base field'], 'uid');
 
     $view = Views::getView('users');
     $this->executeView($view);
 
     // Ensure values are populated for user and profiles.
     foreach ($view->result as $index => $row) {
-      $this->assertEqual($row->uid, $user[$index]->id(), 'User ' . $user[$index]->id() . ' found on row: ' . $index);
-      $this->assertEqual($row->profile_users_field_data_profile_id, $profile[$index]->id(), 'Profile ' . $profile[$index]->id() . ' found on view: ' . $index);
+      $this->assertEquals($row->uid, $user[$index]->id(), 'User ' . $user[$index]->id() . ' found on row: ' . $index);
+      $this->assertEquals($row->profile_users_field_data_profile_id, $profile[$index]->id(), 'Profile ' . $profile[$index]->id() . ' found on view: ' . $index);
     }
   }
 
