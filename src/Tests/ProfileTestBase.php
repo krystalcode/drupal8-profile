@@ -7,9 +7,7 @@ use Drupal\Core\Entity\Entity\EntityViewDisplay;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
-use Drupal\profile\Entity\ProfileType;
 use Drupal\simpletest\WebTestBase;
-use Drupal\profile\Tests\ProfileTestTrait;
 
 /**
  * Tests profile access handling.

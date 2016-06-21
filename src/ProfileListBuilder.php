@@ -103,7 +103,7 @@ class ProfileListBuilder extends EntityListBuilder {
     $options = $uri->getOptions();
     $options += ($langcode != LanguageInterface::LANGCODE_NOT_SPECIFIED && isset($languages[$langcode]) ? ['language' => $languages[$langcode]] : []);
     $uri->setOptions($options);
-    $row['label'] = $entity->link();
+    $row['label'] = $entity->toLink();
     $row['type'] = $entity->getType();
     $row['owner']['data'] = [
       '#theme' => 'username',

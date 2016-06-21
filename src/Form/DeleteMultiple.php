@@ -93,7 +93,7 @@ class DeleteMultiple extends ConfirmFormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $this->profiles = $this->privateTempStoreFactory->get('profile_multiple_delete_confirm')->get(\Drupal::currentUser()->id());
     if (empty($this->profiles)) {
-      return new RedirectResponse(\Drupal::url('admin/config/people/profiles', ['absolute' => TRUE]));
+      return new RedirectResponse(\Drupal::url('entity.profile.collection', [], ['absolute' => TRUE]));
     }
 
     $form['profiles'] = [
