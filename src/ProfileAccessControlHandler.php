@@ -92,7 +92,8 @@ class ProfileAccessControlHandler extends EntityAccessControlHandler {
       return AccessResult::allowed()->cachePerPermissions();
     }
     else {
-      return AccessResult::forbidden()->cachePerPermissions();
+      // No opinion.
+      return AccessResult::neutral()->cachePerPermissions();
     }
   }
 
