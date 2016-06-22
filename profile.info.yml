@@ -1,9 +1,7 @@
 name: Profile
 type: module
 description: 'Provides configurable user profiles.'
-package: Core
 core: 8.x
-version: VERSION
 configure: entity.profile_type.collection
 dependencies:
   - user
