@@ -70,7 +70,7 @@ class DeleteProfile extends ActionBase implements ContainerFactoryPluginInterfac
    * {@inheritdoc}
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
-    /** @var \Drupal\node\NodeInterface $object */
+    /** @var \Drupal\profile\Entity\ProfileInterface $object */
     return $object->access('delete', $account, $return_as_object);
   }
 
