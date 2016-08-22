@@ -215,21 +215,21 @@ function profile_form_user_register_form_alter(&$form, FormStateInterface $form_
 
         // Attach profile entity form.
         $form_state->set($property, $profile);
-        $form_state->set('form_display_' . $profile_type->id(), EntityFormDisplay::collectRenderDisplay($profile, 'default'));
-        $form['entity_' . $profile_type->id()] = array(
-          '#type' => 'details',
-          '#title' => $profile_type->label(),
-          '#tree' => TRUE,
-          '#parents' => array('entity_' . $profile_type->id()),
-          '#weight' => ++$weight,
-          '#open' => TRUE,
-        );
-        $form_state
-          ->get('form_display_' . $profile_type->id())
-          ->buildForm($profile, $form['entity_' . $profile_type->id()], $form_state);
-
-        $attached_profile_form = TRUE;
       }
+      $form_state->set('form_display_' . $profile_type->id(), EntityFormDisplay::collectRenderDisplay($profile, 'default'));
+      $form['entity_' . $profile_type->id()] = [
+        '#type' => 'details',
+        '#title' => $profile_type->label(),
+        '#tree' => TRUE,
+        '#parents' => ['entity_' . $profile_type->id()],
+        '#weight' => ++$weight,
+        '#open' => TRUE,
+      ];
+      $form_state
+        ->get('form_display_' . $profile_type->id())
+        ->buildForm($profile, $form['entity_' . $profile_type->id()], $form_state);
+
+      $attached_profile_form = TRUE;
     }
   }
 
