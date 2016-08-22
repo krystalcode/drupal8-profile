@@ -319,3 +319,22 @@ function profile_views_data_alter(&$data) {
     'field' => 'uid',
   ];
 }
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+function profile_theme_suggestions_profile(array $variables) {
+  $original = $variables['theme_hook_original'];
+  $entity = $variables['elements']['#profile'];
+  $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
+
+  $suggestions = [];
+  $suggestions[] = $original;
+  $suggestions[] = $original . '__' . $sanitized_view_mode;
+  $suggestions[] = $original . '__' . $entity->bundle();
+  $suggestions[] = $original . '__' . $entity->bundle() . '__' . $sanitized_view_mode;
+  $suggestions[] = $original . '__' . $entity->id();
+  $suggestions[] = $original . '__' . $entity->id() . '__' . $sanitized_view_mode;
+
+  return $suggestions;
+}
