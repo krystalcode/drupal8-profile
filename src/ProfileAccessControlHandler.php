@@ -52,14 +52,16 @@ class ProfileAccessControlHandler extends EntityAccessControlHandler {
     // being added to has any of the required roles.
     if ($entity->getEntityTypeId() == 'profile') {
       $profile_roles = ProfileType::load($entity->bundle())->getRoles();
-      $user_roles = $entity->getOwner()->getRoles(TRUE);
+      // Retrieve all user roles including locked roles.
+      $user_roles = $entity->getOwner()->getRoles();
       if (!empty(array_filter($profile_roles)) && !array_intersect($user_roles, $profile_roles)) {
         return AccessResult::forbidden();
       }
     }
     elseif ($entity->getEntityTypeId() == 'profile_type') {
       $profile_roles = $entity->getRoles();
-      $user_roles = User::load($user_page->id())->getRoles(TRUE);
+      // Retrieve all user roles including locked roles.
+      $user_roles = User::load($user_page->id())->getRoles();
       if (!empty(array_filter($profile_roles)) && !array_intersect($user_roles, $profile_roles)) {
         return AccessResult::forbidden();
       }
