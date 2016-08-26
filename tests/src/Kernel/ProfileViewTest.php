@@ -3,7 +3,7 @@
 namespace Drupal\Tests\profile\Kernel;
 
 use Drupal\Component\Utility\Unicode;
-use Drupal\profile\Tests\ProfileTestTrait;
+use Drupal\profile\ProfileTestTrait;
 use Drupal\Tests\views\Kernel\ViewsKernelTestBase;
 use Drupal\user\Entity\User;
 use Drupal\views\Views;

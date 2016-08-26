@@ -62,4 +62,34 @@ class ProfileTypeMultipleTest extends ProfileTestBase {
     $this->drupalGet("user/{$web_user1->id()}/{$this->type->id()}");
     $this->assertText($value2);
   }
+
+  /**
+   * Tests the non-multiple profile type create and edit flow.
+   */
+  public function testProfileNotMultipleFlow() {
+    $web_user1 = $this->createUser([
+      "add own {$this->type->id()} profile",
+      "edit own {$this->type->id()} profile",
+    ]);
+    $this->drupalLogin($web_user1);
+
+    // Create the profile.
+    $edit = [
+      "{$this->field->getName()}[0][value]" => $this->randomString(),
+    ];
+    $this->drupalPostForm("user/{$web_user1->id()}/{$this->type->id()}", $edit, 'Save and make default');
+    $this->assertRaw(new FormattableMarkup('%type profile has been created.', [
+      '%type' => $this->type->label(),
+    ]));
+
+    // Update the profile.
+    $edit = [
+      "{$this->field->getName()}[0][value]" => $this->randomString(),
+    ];
+    $this->drupalPostForm("user/{$web_user1->id()}/{$this->type->id()}", $edit, t('Save'));
+    $this->assertRaw(new FormattableMarkup('%type profile has been updated.', [
+      '%type' => $this->type->label(),
+    ]));
+  }
+
 }
