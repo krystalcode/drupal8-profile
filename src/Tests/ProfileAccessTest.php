@@ -94,9 +94,11 @@ class ProfileAccessTest extends ProfileTestBase {
     // Setup users.
     $web_user1 = $this->drupalCreateUser([
       "view own {$this->type->id()} profile",
+      'access user profiles',
     ]);
     $web_user2 = $this->drupalCreateUser([
       "view any {$this->type->id()} profile",
+      'access user profiles',
     ]);
 
     // Setup profiles.
@@ -124,6 +126,19 @@ class ProfileAccessTest extends ProfileTestBase {
     $this->assertTrue($access);
     $access = $profile2->access('view', $web_user2);
     $this->assertTrue($access);
+
+    // Log in as user1 and view user2's profile.
+    // Test user1 does not see the title of user2's profile.
+    $this->drupalLogin($web_user1);
+    $this->drupalGet('user/' . $web_user2->id());
+    $this->assertNoText($this->type->label());
+
+    // Log in as user2 and view user1's profile.
+    // Test user2 does see the title of user1's profile.
+    $this->drupalLogout();
+    $this->drupalLogin($web_user2);
+    $this->drupalGet('user/' . $web_user1->id());
+    $this->assertText($this->type->label());
   }
 
   /**

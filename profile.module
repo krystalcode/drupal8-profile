@@ -297,8 +297,13 @@ function profile_preprocess_views_view(&$variables) {
   // @see template_preprocess_views_view()
   /** @var \Drupal\views\ViewExecutable $view */
   $view = $variables['view'];
-  if ($view->storage->id() == 'profiles') {
-    $variables['title'] = $view->getTitle();
+  if ($view->storage->id() == 'profiles' && !empty($view->result)) {
+    // Test access to the profile.
+    /** @var \Drupal\profile\Entity\profile $entity */
+    $entity = reset($view->result)->_entity;
+    if ($entity->access('view')) {
+      $variables['title'] = $view->getTitle();
+    }
   }
 }
 
