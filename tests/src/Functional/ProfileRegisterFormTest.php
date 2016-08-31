@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\profile\Tests;
+namespace Drupal\Tests\profile\Functional;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Session\AccountInterface;
@@ -10,7 +10,7 @@ use Drupal\Core\Session\AccountInterface;
  *
  * @group profile
  */
-class ProfileAttachTest extends ProfileTestBase {
+class ProfileRegisterFormTest extends ProfileTestBase {
 
   /**
    * Test user registration integration.
@@ -41,26 +41,26 @@ class ProfileAttachTest extends ProfileTestBase {
     ];
     $this->drupalPostForm('user/register', $edit, t('Create new account'));
 
-    $this->assertRaw(new FormattableMarkup('@name field is required.', ['@name' => $this->field->getLabel()]));
+    $this->assertSession()->pageTextContains(new FormattableMarkup('@name field is required.', ['@name' => $this->field->getLabel()]));
 
     // Verify that we can register.
     $edit["entity_" . $id . "[$field_name][0][value]"] = $this->randomMachineName();
     $this->drupalPostForm(NULL, $edit, t('Create new account'));
-    $this->assertText(new FormattableMarkup('Registration successful. You are now logged in.', []));
+    $this->assertSession()->pageTextContains(new FormattableMarkup('Registration successful. You are now logged in.', []));
 
     $new_user = user_load_by_name($name);
     $this->assertTrue($new_user->isActive(), 'New account is active after registration.');
 
     // Verify that a new profile was created for the new user ID.
-    $profile = \Drupal::entityTypeManager()
+    $profile = $this->container->get('entity_type.manager')
       ->getStorage('profile')
       ->loadByUser($new_user, $this->type->id());
 
-    $this->assertEqual($profile->get($field_name)->value, $edit["entity_" . $id . "[$field_name][0][value]"], 'Field value found in loaded profile.');
+    $this->assertEquals($profile->get($field_name)->value, $edit["entity_" . $id . "[$field_name][0][value]"], 'Field value found in loaded profile.');
 
     // Verify that the profile field value appears on the user account page.
     $this->drupalGet('user');
-    $this->assertText($edit["entity_" . $id . "[$field_name][0][value]"], 'Field value found on user account page.');
+    $this->assertSession()->pageTextContains($edit["entity_" . $id . "[$field_name][0][value]"]);
   }
 
 }
