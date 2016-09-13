@@ -248,8 +248,10 @@ function profile_form_user_register_form_validate(array &$form, FormStateInterfa
     foreach ($profiles as $bundle => $entity) {
       /** @var \Drupal\Core\Entity\Display\EntityFormDisplayInterface $form_display */
       $form_display = $form_state->get('form_display_' . $bundle);
-      $form_display->extractFormValues($entity, $form['entity_' . $bundle], $form_state);
-      $form_display->validateFormValues($entity, $form['entity_' . $bundle], $form_state);
+      if (isset($form['entity_' . $bundle])) {
+        $form_display->extractFormValues($entity, $form['entity_' . $bundle], $form_state);
+        $form_display->validateFormValues($entity, $form['entity_' . $bundle], $form_state);
+      }
     }
   }
   // Entity was validated in entityFormValidate(). This will prevent validation
