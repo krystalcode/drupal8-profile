@@ -4,6 +4,7 @@ namespace Drupal\Tests\profile\Kernel;
 
 use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
+use Drupal\profile\Entity\Profile;
 use Drupal\profile\Entity\ProfileType;
 use Drupal\profile\ProfileTestTrait;
 
@@ -144,6 +145,90 @@ class ProfileTest extends EntityKernelTestBase {
     $list = $this->profileStorage->loadByProperties(['uid' => $this->user2->id()]);
     $list_ids = array_keys($list);
     $this->assertEquals($list_ids, [$user2_profile1->id()]);
+  }
+
+  /**
+   * Tests profiles are active by default.
+   */
+  public function testProfileActive() {
+    $profile_type = ProfileType::create([
+      'id' => 'test_defaults',
+      'label' => 'test_defaults',
+    ]);
+
+    // Create new profiles.
+    $profile1 = Profile::create($expected = [
+      'type' => $profile_type->id(),
+      'uid' => $this->user1->id(),
+    ]);
+    $profile1->save();
+    $this->assertTrue($profile1->isActive());
+
+    $profile1->setActive(PROFILE_NOT_ACTIVE);
+    $profile1->save();
+
+    $this->assertFalse($profile1->isActive());
+  }
+
+  /**
+   * Tests default profile functionality.
+   */
+  public function testDefaultProfile() {
+    $profile_type = ProfileType::create([
+      'id' => 'test_defaults',
+      'label' => 'test_defaults',
+    ]);
+
+    // Create new profiles.
+    $profile1 = Profile::create($expected = [
+      'type' => $profile_type->id(),
+      'uid' => $this->user1->id(),
+    ]);
+    $profile1->save();
+    $profile2 = Profile::create($expected = [
+      'type' => $profile_type->id(),
+      'uid' => $this->user1->id(),
+    ]);
+    $profile2->setDefault(TRUE);
+    $profile2->save();
+
+    $this->assertFalse($profile1->isDefault());
+    $this->assertTrue($profile2->isDefault());
+
+    $profile1->setDefault(TRUE)->save();
+    $this->assertFalse($this->reloadEntity($profile2)->isDefault());
+    $this->assertTrue($this->reloadEntity($profile1)->isDefault());
+  }
+
+  /**
+   * Tests loading default from storage handler.
+   */
+  public function testLoadDefaultProfile() {
+    $profile_type = ProfileType::create([
+      'id' => 'test_defaults',
+      'label' => 'test_defaults',
+    ]);
+
+    // Create new profiles.
+    $profile1 = Profile::create($expected = [
+      'type' => $profile_type->id(),
+      'uid' => $this->user1->id(),
+    ]);
+    $profile1->setActive(TRUE);
+    $profile1->save();
+    $profile2 = Profile::create($expected = [
+      'type' => $profile_type->id(),
+      'uid' => $this->user1->id(),
+    ]);
+    $profile2->setActive(TRUE);
+    $profile2->setDefault(TRUE);
+    $profile2->save();
+
+    /** @var \Drupal\profile\ProfileStorageInterface $storage */
+    $storage = \Drupal::entityTypeManager()->getStorage('profile');
+
+    $default_profile = $storage->loadDefaultByUser($this->user1, $profile_type->id());
+    $this->assertEquals($profile2->id(), $default_profile->id());
   }
 
 }

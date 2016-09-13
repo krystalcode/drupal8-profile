@@ -21,7 +21,7 @@ trait ProfileTestTrait {
    *   The profile type machine name.
    * @param string $label
    *   The profile type human display name.
-   * @param bool|FALSE $registration
+   * @param bool $registration
    *   Boolean if profile type shows on registration form.
    * @param array $roles
    *   Array of user role machine names.
