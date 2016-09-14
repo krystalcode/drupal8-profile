@@ -98,8 +98,8 @@ class ProfileDefaultTest extends ProfileTestBase {
     $this->assertTrue($profile2->isDefault());
 
     $this->drupalLogin($admin_user);
-
-    $this->drupalPostForm("profile/{$profile1->id()}/edit", [], 'Save and make default');
+    $this->drupalGet($profile1->toUrl('edit-form')->toString());
+    $this->submitForm([], 'Save and make default');
 
     \Drupal::entityTypeManager()->getStorage('profile')->resetCache([$profile1->id(), $profile2->id()]);
     $this->assertTrue(Profile::load($profile1->id())->isDefault());

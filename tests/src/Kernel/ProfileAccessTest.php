@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\profile\Tests;
+namespace Drupal\Tests\profile\Kernel;
 
 use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 use Drupal\profile\Entity\Profile;
@@ -158,18 +158,6 @@ class ProfileAccessTest extends EntityKernelTestBase {
     // Test user2 can view any profiles.
     $this->assertTrue($profile1->access('view', $web_user2));
     $this->assertTrue($profile2->access('view', $web_user2));
-
-    $user_view_builder = $this->container->get('entity_type.manager')->getViewBuilder('user');
-
-    $this->container->get('current_user')->setAccount($web_user1);
-    $user2_view = $user_view_builder->view($web_user2);
-    $this->render($user2_view);
-    $this->assertNoText($this->type->label());
-
-    $this->container->get('current_user')->setAccount($web_user2);
-    $user1_view = $user_view_builder->view($web_user1);
-    $this->render($user1_view);
-    $this->assertText($this->type->label());
   }
 
   /**

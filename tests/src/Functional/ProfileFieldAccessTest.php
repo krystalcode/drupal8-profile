@@ -2,8 +2,6 @@
 
 namespace Drupal\Tests\profile\Functional;
 
-use Drupal\Core\Cache\Cache;
-
 /**
  * Tests profile field access functionality.
  *
@@ -57,10 +55,11 @@ class ProfileFieldAccessTest extends ProfileTestBase {
     $this->drupalLogin($this->webUser);
     $uid = $this->webUser->id();
     $secret = $this->randomMachineName();
+    $this->drupalGet("user/$uid/{$this->type->id()}");
     $edit = [
       'profile_fullname[0][value]' => $secret,
     ];
-    $this->drupalPostForm("user/$uid/{$this->type->id()}", $edit, t('Save'));
+    $this->submitForm($edit, t('Save'));
 
     // Verify that the private field value appears for the profile owner.
     $this->drupalGet($this->webUser->toUrl()->toString());

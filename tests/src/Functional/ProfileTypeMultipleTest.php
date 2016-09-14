@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\profile\Tests;
+namespace Drupal\Tests\profile\Functional;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Cache\Cache;

@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\profile\Tests;
+namespace Drupal\Tests\profile\Functional;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\Unicode;
@@ -73,31 +73,6 @@ class ProfileTypeCRUDTest extends ProfileTestBase {
     $this->drupalPostForm(NULL, $edit, t('Save'));
     $this->assertUrl('admin/config/people/profiles/types');
     $this->assertRaw(new FormattableMarkup('%label profile type has been updated.', ['%label' => $label]));
-
-    \Drupal::service('entity_type.bundle.info')->clearCachedBundles();
-
-    // Add a field to the profile type.
-    $this->drupalGet("admin/config/people/profiles/types/manage/$id/fields/add-field");
-    $field_name = Unicode::strtolower($this->randomMachineName());
-    $field_label = $this->randomString();
-    $edit = [
-      'new_storage_type' => 'string',
-      'label' => $field_label,
-      'field_name' => $field_name,
-    ];
-    $this->drupalPostForm(NULL, $edit, t('Save and continue'));
-    $this->drupalPostForm(NULL, [], t('Save field settings'));
-    $this->drupalPostForm(NULL, [], t('Save settings'));
-    $this->assertRaw(new FormattableMarkup('Saved %label configuration.', ['%label' => $field_label]));
-
-    // Verify that the field is still associated with it.
-    $this->drupalGet("admin/config/people/profiles/types/manage/$id/fields");
-    // @todo D8 core: This assertion fails for an unknown reason. Database
-    //   contains the right values, so field_attach_rename_bundle() works
-    //   correctly. The pre-existing field does not appear on the Manage
-    //   fields page of the renamed bundle. Not even flushing all caches
-    //   helps. Can be reproduced manually.
-    // $this->assertText(check_plain($field_label));
   }
 
 }

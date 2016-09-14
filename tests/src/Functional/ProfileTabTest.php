@@ -1,6 +1,6 @@
 <?php
 
-namespace Drupal\profile\Tests;
+namespace Drupal\Tests\profile\Functional;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Core\Url;
@@ -116,17 +116,17 @@ class ProfileTabTest extends ProfileTestBase {
    *   secondary. Defaults to 0.
    */
   protected function assertLocalTasks(array $routes, $level = 0) {
-    $elements = $this->xpath('//*[contains(@class, :class)]//a', array(
+    $elements = $this->xpath('//*[contains(@class, :class)]//a', [
       ':class' => $level == 0 ? 'tabs primary' : 'tabs secondary',
-    ));
+    ]);
     $this->assertTrue(count($elements), 'Local tasks found.');
     foreach ($routes as $index => $route_info) {
       list($route_name, $route_parameters) = $route_info;
       $expected = Url::fromRoute($route_name, $route_parameters)->toString();
-      $method = ($elements[$index]['href'] == $expected ? 'pass' : 'fail');
+      $method = ($elements[$index]->getAttribute('href') == $expected ? 'pass' : 'fail');
       $this->{$method}(new FormattableMarkup('Task @number href @value equals @expected.', [
         '@number' => $index + 1,
-        '@value' => (string) $elements[$index]['href'],
+        '@value' => (string) $elements[$index]->getAttribute('href'),
         '@expected' => $expected,
       ]));
     }

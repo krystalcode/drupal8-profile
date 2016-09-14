@@ -30,6 +30,7 @@ class ProfileRegisterFormTest extends ProfileTestBase {
       ->save();
     user_role_grant_permissions(AccountInterface::AUTHENTICATED_ROLE, ['view own test profile']);
 
+    $this->drupalGet('user/register');
     // Verify that the additional profile field is attached and required.
     $name = $this->randomMachineName();
     $pass_raw = $this->randomMachineName();
@@ -39,13 +40,13 @@ class ProfileRegisterFormTest extends ProfileTestBase {
       'pass[pass1]' => $pass_raw,
       'pass[pass2]' => $pass_raw,
     ];
-    $this->drupalPostForm('user/register', $edit, t('Create new account'));
+    $this->submitForm($edit, t('Create new account'));
 
     $this->assertSession()->pageTextContains(new FormattableMarkup('@name field is required.', ['@name' => $this->field->getLabel()]));
 
     // Verify that we can register.
     $edit["entity_" . $id . "[$field_name][0][value]"] = $this->randomMachineName();
-    $this->drupalPostForm(NULL, $edit, t('Create new account'));
+    $this->submitForm($edit, t('Create new account'));
     $this->assertSession()->pageTextContains(new FormattableMarkup('Registration successful. You are now logged in.', []));
 
     $new_user = user_load_by_name($name);
