@@ -256,7 +256,7 @@ function profile_form_user_register_form_validate(array &$form, FormStateInterfa
   }
   // Entity was validated in entityFormValidate(). This will prevent validation
   // exception from being thrown.
-  $form_state->getFormObject()->getEntity()->validate();
+  $form_state->getFormObject()->validateForm($form, $form_state);
 }
 
 /**

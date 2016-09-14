@@ -34,17 +34,20 @@ class ProfileRegisterFormTest extends ProfileTestBase {
     // Verify that the additional profile field is attached and required.
     $name = $this->randomMachineName();
     $pass_raw = $this->randomMachineName();
+    // Use existing email to verify normal validation happens.
     $edit = [
       'name' => $name,
-      'mail' => $this->randomMachineName() . '@example.com',
+      'mail' => $this->adminUser->getEmail(),
       'pass[pass1]' => $pass_raw,
       'pass[pass2]' => $pass_raw,
     ];
     $this->submitForm($edit, t('Create new account'));
 
     $this->assertSession()->pageTextContains(new FormattableMarkup('@name field is required.', ['@name' => $this->field->getLabel()]));
+    $this->assertSession()->pageTextContains(new FormattableMarkup('The email address @email is already taken.', ['@email' => $this->adminUser->getEmail()]));
 
     // Verify that we can register.
+    $edit['mail'] = $this->randomMachineName() . '@example.com';
     $edit["entity_" . $id . "[$field_name][0][value]"] = $this->randomMachineName();
     $this->submitForm($edit, t('Create new account'));
     $this->assertSession()->pageTextContains(new FormattableMarkup('Registration successful. You are now logged in.', []));
