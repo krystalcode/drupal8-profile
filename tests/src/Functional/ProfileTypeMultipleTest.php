@@ -74,10 +74,13 @@ class ProfileTypeMultipleTest extends ProfileTestBase {
     $this->drupalLogin($web_user1);
 
     // Create the profile.
+    $this->drupalGet("user/{$web_user1->id()}/{$this->type->id()}");
+    $this->assertSession()->buttonNotExists('Save and make default');
+
     $edit = [
       "{$this->field->getName()}[0][value]" => $this->randomString(),
     ];
-    $this->drupalPostForm("user/{$web_user1->id()}/{$this->type->id()}", $edit, 'Save and make default');
+    $this->submitForm($edit, 'Save');
     $this->assertRaw(new FormattableMarkup('%type profile has been created.', [
       '%type' => $this->type->label(),
     ]));

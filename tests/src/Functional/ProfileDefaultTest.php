@@ -3,6 +3,7 @@
 namespace Drupal\Tests\profile\Functional;
 
 use Drupal\profile\Entity\Profile;
+use Drupal\profile\Entity\ProfileType;
 use Drupal\user\Entity\User;
 
 /**
@@ -62,33 +63,29 @@ class ProfileDefaultTest extends ProfileTestBase {
    * Tests whether profile default on edit is working.
    */
   public function testProfileEdit() {
-    $types_data = [
-      'profile_type_0' => [
-        'label' => $this->randomMachineName(),
-        'multiple' => TRUE,
-      ],
-    ];
-
-    /** @var \Drupal\profile\Entity\ProfileTypeInterface[] $types */
-    $types = [];
-    foreach ($types_data as $id => $values) {
-      $types[$id] = $this->createProfileType($id, $values['label']);
-    }
+    $type = ProfileType::create([
+      'id' => $this->randomMachineName(),
+      'label' => $this->randomMachineName(),
+      'registration' => FALSE,
+      'roles' => [],
+      'multiple' => TRUE,
+    ]);
+    $type->save();
 
     $admin_user = $this->drupalCreateUser([
       'administer profiles',
       'administer users',
-      'edit any ' . $types['profile_type_0']->id() . ' profile',
+      'edit any ' . $type->id() . ' profile',
     ]);
 
     // Create new profiles.
     $profile1 = Profile::create($expected = [
-      'type' => $types['profile_type_0']->id(),
+      'type' => $type->id(),
       'uid' => $this->user1->id(),
     ]);
     $profile1->save();
     $profile2 = Profile::create($expected = [
-      'type' => $types['profile_type_0']->id(),
+      'type' => $type->id(),
       'uid' => $this->user1->id(),
     ]);
     $profile2->setDefault(TRUE);
@@ -98,6 +95,10 @@ class ProfileDefaultTest extends ProfileTestBase {
     $this->assertTrue($profile2->isDefault());
 
     $this->drupalLogin($admin_user);
+
+    $this->drupalGet($profile2->toUrl('edit-form')->toString());
+    $this->assertSession()->buttonNotExists('Save and make default');
+
     $this->drupalGet($profile1->toUrl('edit-form')->toString());
     $this->submitForm([], 'Save and make default');
 
