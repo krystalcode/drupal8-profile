@@ -8,6 +8,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\profile\Event\ProfileEvents;
+use Drupal\profile\Event\ProfileLabelEvent;
 use Drupal\user\UserInterface;
 
 
@@ -66,13 +68,17 @@ class Profile extends ContentEntityBase implements ProfileInterface {
    */
   public function label() {
     $profile_type = ProfileType::load($this->bundle());
-    return
-      t('@type profile of @username (uid: @uid)',
-        [
-          '@type' => $profile_type->label(),
-          '@username' => $this->getOwner()->getDisplayName(),
-          '@uid' => $this->getOwnerId(),
-        ]);
+    $label = t('@type profile #@id', [
+      '@type' => $profile_type->label(),
+      '@id' => $this->id(),
+    ]);
+    // Allow the label to be overridden.
+    $event = new ProfileLabelEvent($this, $label);
+    $event_dispatcher = \Drupal::service('event_dispatcher');
+    $event_dispatcher->dispatch(ProfileEvents::PROFILE_LABEL, $event);
+    $label = $event->getLabel();
+
+    return $label;
   }
 
   /**
