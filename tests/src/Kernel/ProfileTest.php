@@ -164,7 +164,7 @@ class ProfileTest extends EntityKernelTestBase {
     $profile1->save();
     $this->assertTrue($profile1->isActive());
 
-    $profile1->setActive(PROFILE_NOT_ACTIVE);
+    $profile1->setActive(FALSE);
     $profile1->save();
 
     $this->assertFalse($profile1->isActive());
