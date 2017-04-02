@@ -5,7 +5,11 @@
  * Support for configurable user profiles.
  */
 
+use Drupal\Core\Access\AccessResult;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\user\UserInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
@@ -33,6 +37,29 @@ function profile_help($route_name, RouteMatchInterface $route_match) {
       $output .= '</dl>';
       return $output;
   }
+}
+
+/**
+ * Implements hook_entity_field_access().
+ */
+function profile_entity_field_access($operation, FieldDefinitionInterface $field_definition, AccountInterface $account, FieldItemListInterface $items = NULL) {
+  if ($operation == 'view' && $items && $field_definition->getTargetEntityTypeId() == 'profile') {
+    if ($field_definition instanceof FieldConfigInterface) {
+      $is_private = $field_definition->getThirdPartySetting('profile', 'profile_private', FALSE);
+      if ($is_private) {
+        // Users may see their own private profile fields by default, so this
+        // requires user granularity for caching.
+        /** @var \Drupal\profile\Entity\ProfileInterface $profile */
+        $profile = $items->getEntity();
+        if ($account->id() === $profile->getOwnerId()) {
+          return AccessResult::neutral();
+        }
+
+        return AccessResult::forbiddenIf(!$account->hasPermission('administer profile'));
+      }
+    }
+  }
+  return AccessResult::neutral();
 }
 
 /**

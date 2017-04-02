@@ -1,6 +1,8 @@
 <?php
 
 namespace Drupal\Tests\profile\Functional;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
 
 /**
  * Tests profile field access functionality.
@@ -27,6 +29,7 @@ class ProfileFieldAccessTest extends ProfileTestBase {
 
     $this->adminUser = $this->drupalCreateUser([
       'access user profiles',
+      'administer profile',
       'administer profile types',
       'administer profile fields',
       'administer profile display',
@@ -36,7 +39,7 @@ class ProfileFieldAccessTest extends ProfileTestBase {
       'access user profiles',
       "create {$this->type->id()} profile",
       "update own {$this->type->id()} profile",
-      "view own {$this->type->id()} profile",
+      "view any {$this->type->id()} profile",
     ];
 
     $this->webUser   = $this->drupalCreateUser($user_permissions);
@@ -52,28 +55,60 @@ class ProfileFieldAccessTest extends ProfileTestBase {
     $this->field->setThirdPartySetting('profile', 'profile_private', TRUE);
     $this->field->save();
 
+    $field_storage = FieldStorageConfig::create([
+      'field_name' => 'profile_bio',
+      'entity_type' => 'profile',
+      'type' => 'text',
+    ]);
+    $field_storage->save();
+
+    $bio_field = FieldConfig::create([
+      'field_storage' => $field_storage,
+      'bundle' => $this->type->id(),
+      'label' => 'Bio',
+    ]);
+    $bio_field->save();
+
+    $this->display
+      ->setComponent($bio_field->getName(), [
+        'type' => 'string',
+        'label' => 'above',
+      ])
+      ->save();
+    $this->form
+      ->setComponent($bio_field->getName(), [
+        'type' => 'text_default',
+        'settings' => [],
+      ])->save();
+
     // Fill in a field value.
     $this->drupalLogin($this->webUser);
     $uid = $this->webUser->id();
     $secret = $this->randomMachineName();
+    $not_secret = $this->randomMachineName();
     $this->drupalGet("user/$uid/{$this->type->id()}");
     $edit = [
       'profile_fullname[0][value]' => $secret,
+      'profile_bio[0][value]' => $not_secret,
     ];
     $this->submitForm($edit, 'Save');
 
     // Verify that the private field value appears for the profile owner.
     $this->drupalGet($this->webUser->toUrl());
     $this->assertSession()->pageTextContains($secret);
+    $this->assertSession()->pageTextContains($not_secret);
+
+    // Verify that the private field value does not appear for other users.
+    $this->drupalLogin($this->otherUser);
+    $this->drupalGet($this->webUser->toUrl());
+    $this->assertSession()->pageTextNotContains($secret);
+    $this->assertSession()->pageTextContains($not_secret);
 
     // Verify that the private field value appears for the administrator.
     $this->drupalLogin($this->adminUser);
     $this->drupalGet($this->webUser->toUrl());
-    // $this->assertSession()->pageTextContains($secret);
-    // Verify that the private field value does not appear for other users.
-    $this->drupalLogin($this->otherUser);
-    $this->drupalGet($this->webUser->toUrl());
-    // $this->assertSession()->pageTextContains($secret);
+    $this->assertSession()->pageTextContains($secret);
+    $this->assertSession()->pageTextContains($not_secret);
   }
 
 }
