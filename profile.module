@@ -5,6 +5,7 @@
  * Support for configurable user profiles.
  */
 
+use Drupal\Core\Render\Element;
 use Drupal\user\UserInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
@@ -63,7 +64,7 @@ function template_preprocess_profile(array &$variables) {
   $variables['url'] = $profile->toUrl();
   // Helpful $content variable for templates.
   $variables['content'] = [];
-  foreach (\Drupal\Core\Render\Element::children($variables['elements']) as $key) {
+  foreach (Element::children($variables['elements']) as $key) {
     $variables['content'][$key] = $variables['elements'][$key];
   }
 }
@@ -120,7 +121,7 @@ function profile_user_delete(EntityInterface $entity) {
     ->getStorage('profile')
     ->loadByProperties([
       'uid' => $entity->id(),
-      ]);
+    ]);
 
   foreach ($list as $profile) {
     $profile->delete();

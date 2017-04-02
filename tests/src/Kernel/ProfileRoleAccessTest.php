@@ -21,7 +21,11 @@ class ProfileRoleAccessTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['user', 'system', 'field', 'text', 'profile', 'views'];
+  public static $modules = [
+    'entity',
+    'profile',
+    'views',
+  ];
 
   /**
    * Randomly generated profile type entity.
@@ -87,9 +91,13 @@ class ProfileRoleAccessTest extends EntityKernelTestBase {
     $this->role2->save();
     $this->type1 = $this->createProfileType(NULL, NULL, FALSE, []);
     $this->type2 = $this->createProfileType(NULL, NULL, FALSE, [$this->role2->id()]);
-    $this->type3 = $this->createProfileType(NULL, NULL, FALSE, [$this->role1->id(), $this->role2->id()]);
+    $this->type3 = $this->createProfileType(NULL, NULL, FALSE, [
+      $this->role1->id(),
+      $this->role2->id()
+    ]);
 
-    $this->accessHandler = $this->container->get('entity_type.manager')->getAccessControlHandler('profile');
+    $this->accessHandler = $this->container->get('entity_type.manager')
+      ->getAccessControlHandler('profile');
 
     // Do not allow uid == 1 to skew tests.
     $this->createUser();
@@ -100,15 +108,15 @@ class ProfileRoleAccessTest extends EntityKernelTestBase {
    * users to have a role.
    */
   public function testProfileWithNoRoles() {
-    // Create user with add own profile permissions.
-    $web_user1 = $this->createUser([], ["add own {$this->type1->id()} profile"]);
+    // Create user with add profile permissions.
+    $web_user1 = $this->createUser([], ["create {$this->type1->id()} profile"]);
     $this->assertTrue($this->accessHandler->createAccess($this->type1->id(), $web_user1));
   }
 
   public function testLockedRoles() {
     $locked_role_type = $this->createProfileType(NULL, NULL, FALSE, [AccountInterface::AUTHENTICATED_ROLE]);
-    // Create user with add own profile permissions.
-    $web_user1 = $this->createUser([], ["add own {$locked_role_type->id()} profile"]);
+    // Create user with add profile permissions.
+    $web_user1 = $this->createUser([], ["create {$locked_role_type->id()} profile"]);
     $this->assertTrue($this->accessHandler->createAccess($locked_role_type->id(), $web_user1));
   }
 
@@ -118,7 +126,7 @@ class ProfileRoleAccessTest extends EntityKernelTestBase {
    */
   public function testProfileWithSingleRole() {
     // Create user with add own profile permissions.
-    $web_user1 = $this->createUser([], ["add own {$this->type2->id()} profile"]);
+    $web_user1 = $this->createUser([], ["create {$this->type2->id()} profile"]);
 
     // Test user without role can access add profile form.
     // Expected: User cannot access form.
@@ -150,7 +158,7 @@ class ProfileRoleAccessTest extends EntityKernelTestBase {
    */
   public function testProfileWithAllRoles() {
     // Create user with add own profile permissions.
-    $web_user1 = $this->createUser([], ["add own {$this->type3->id()} profile"]);
+    $web_user1 = $this->createUser([], ["create {$this->type3->id()} profile"]);
 
     // Test user without role can access add profile form.
     // Expected: User cannot access form.

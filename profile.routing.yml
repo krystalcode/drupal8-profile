@@ -5,7 +5,7 @@ entity.profile.collection:
     _entity_list: 'profile'
     _title: 'Profiles'
   requirements:
-    _permission: 'administer profiles'
+    _permission: 'administer profile'
 
 entity.profile_type.collection:
   path: '/admin/config/people/profiles/types'
@@ -45,7 +45,7 @@ entity.profile.multiple_delete_confirm:
   defaults:
     _form: '\Drupal\profile\Form\DeleteMultiple'
   requirements:
-    _permission: 'administer profiles'
+    _permission: 'administer profile'
 
 entity.profile.set_default:
   path: '/profile/{profile}/set-default'

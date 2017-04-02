@@ -39,9 +39,8 @@ class ProfileTabTest extends ProfileTestBase {
 
     $this->adminUser = $this->drupalCreateUser([
       'access user profiles',
-      'administer profiles',
+      'administer profile',
       'administer profile types',
-      'bypass profile access',
       'access administration pages',
     ]);
   }

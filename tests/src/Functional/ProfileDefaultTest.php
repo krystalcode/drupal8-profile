@@ -41,9 +41,8 @@ class ProfileDefaultTest extends ProfileTestBase {
 
     $this->adminUser = $this->drupalCreateUser([
       'access user profiles',
-      'administer profiles',
+      'administer profile',
       'administer profile types',
-      'bypass profile access',
       'access administration pages',
     ]);
 
@@ -73,9 +72,8 @@ class ProfileDefaultTest extends ProfileTestBase {
     $type->save();
 
     $admin_user = $this->drupalCreateUser([
-      'administer profiles',
+      'administer profile',
       'administer users',
-      'edit any ' . $type->id() . ' profile',
     ]);
 
     // Create new profiles.

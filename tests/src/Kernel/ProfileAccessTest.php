@@ -2,9 +2,12 @@
 
 namespace Drupal\Tests\profile\Kernel;
 
+use Drupal\Component\Utility\SafeMarkup;
+use Drupal\Core\Session\AccountInterface;
 use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 use Drupal\profile\Entity\Profile;
 use Drupal\profile\ProfileTestTrait;
+use Drupal\user\Entity\User;
 
 /**
  * Tests profile access handling.
@@ -20,7 +23,11 @@ class ProfileAccessTest extends EntityKernelTestBase {
    *
    * @var array
    */
-  public static $modules = ['user', 'system', 'field', 'text', 'profile', 'views'];
+  public static $modules = [
+    'entity',
+    'profile',
+    'views',
+  ];
 
   /**
    * The access control handler.
@@ -52,7 +59,8 @@ class ProfileAccessTest extends EntityKernelTestBase {
     $this->installEntitySchema('profile');
     $this->installEntitySchema('view');
     $this->installConfig(['profile']);
-    $this->accessControlHandler = $this->container->get('entity_type.manager')->getAccessControlHandler('profile');
+    $this->accessControlHandler = $this->container->get('entity_type.manager')
+      ->getAccessControlHandler('profile');
     $this->accessManager = $this->container->get('access_manager');
     $this->type = $this->createProfileType('test', 'Test profile', TRUE);
     $this->createUser();
@@ -77,8 +85,8 @@ class ProfileAccessTest extends EntityKernelTestBase {
     ));
 
 
-    // Test user with permission to only add own profile.
-    $web_user2 = $this->createUser([], ["add own {$this->type->id()} profile"]);
+    // Test user with permission to only add a profile.
+    $web_user2 = $this->createUser([], ["create {$this->type->id()} profile"]);
     $web_user1->addRole($web_user2->get('roles')->first()->target_id);
     $web_user1->save();
 
@@ -86,7 +94,7 @@ class ProfileAccessTest extends EntityKernelTestBase {
     $access = $this->accessControlHandler->createAccess($this->type->id(), $web_user2);
     $this->assertTrue($access);
 
-    // User 2 can create own profile of type.
+    // User 2 can create profile of type.
     $this->assertTrue($this->accessManager->checkNamedRoute(
       'entity.profile.add_form',
       ['user' => $web_user2->id(), 'profile_type' => $this->type->id()],
@@ -109,7 +117,7 @@ class ProfileAccessTest extends EntityKernelTestBase {
     ));
 
     // Test user with permission to only add any profile.
-    $web_user3 = $this->createUser([], ["add any {$this->type->id()} profile"]);
+    $web_user3 = $this->createUser([], ["create {$this->type->id()} profile"]);
     $this->assertTrue($this->accessControlHandler->createAccess($this->type->id(), $web_user3));
 
     // Verify access through route.
@@ -158,6 +166,15 @@ class ProfileAccessTest extends EntityKernelTestBase {
     // Test user2 can view any profiles.
     $this->assertTrue($profile1->access('view', $web_user2));
     $this->assertTrue($profile2->access('view', $web_user2));
+
+    user_role_grant_permissions(AccountInterface::ANONYMOUS_ROLE, ["view own {$this->type->id()} profile"]);
+    $this->assertFalse($profile1->access('view', User::getAnonymousUser()));
+    $this->assertFalse($profile2->access('view', User::getAnonymousUser()));
+
+    // @todo Fix in https://www.drupal.org/node/2820209
+    // user_role_grant_permissions(AccountInterface::ANONYMOUS_ROLE, ["view any {$this->type->id()} profile"]);
+    // $this->assertTrue($profile1->access('view', User::getAnonymousUser()));
+    // $this->assertTrue($profile2->access('view', User::getAnonymousUser()));
   }
 
   /**
@@ -166,12 +183,12 @@ class ProfileAccessTest extends EntityKernelTestBase {
   public function testProfileEditAccess() {
     // Setup users.
     $web_user1 = $this->createUser([], [
-      "add own {$this->type->id()} profile",
-      "edit own {$this->type->id()} profile",
+      "create {$this->type->id()} profile",
+      "update own {$this->type->id()} profile",
     ]);
     $web_user2 = $this->createUser([], [
-      "add any {$this->type->id()} profile",
-      "edit any {$this->type->id()} profile",
+      "create {$this->type->id()} profile",
+      "update any {$this->type->id()} profile",
     ]);
 
     // Setup profiles.
@@ -187,12 +204,12 @@ class ProfileAccessTest extends EntityKernelTestBase {
     $profile2->save();
 
     // Test user1 can only edit own profiles.
-    $this->assertTrue($profile1->access('edit', $web_user1));
-    $this->assertFalse($profile2->access('edit', $web_user1));
+    $this->assertTrue($profile1->access('update', $web_user1));
+    $this->assertFalse($profile2->access('update', $web_user1));
 
     // Test user2 can edit any profiles.
-    $this->assertTrue($profile1->access('edit', $web_user2));
-    $this->assertTrue($profile2->access('edit', $web_user2));
+    $this->assertTrue($profile1->access('update', $web_user2));
+    $this->assertTrue($profile2->access('update', $web_user2));
   }
 
 }

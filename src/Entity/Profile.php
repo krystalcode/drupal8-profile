@@ -25,6 +25,7 @@ use Drupal\user\UserInterface;
  *     "view_builder" = "Drupal\profile\ProfileViewBuilder",
  *     "views_data" = "Drupal\profile\ProfileViewsData",
  *     "access" = "Drupal\profile\ProfileAccessControlHandler",
+ *     "permission_provider" = "Drupal\profile\ProfilePermissionProvider",
  *     "list_builder" = "Drupal\profile\ProfileListBuilder",
  *     "form" = {
  *       "default" = "Drupal\profile\Form\ProfileForm",
@@ -38,7 +39,8 @@ use Drupal\user\UserInterface;
  *   },
  *   bundle_entity_type = "profile_type",
  *   field_ui_base_route = "entity.profile_type.edit_form",
- *   admin_permission = "administer profiles",
+ *   admin_permission = "administer profile",
+ *   permission_granularity = "bundle",
  *   base_table = "profile",
  *   revision_table = "profile_revision",
  *   fieldable = TRUE,

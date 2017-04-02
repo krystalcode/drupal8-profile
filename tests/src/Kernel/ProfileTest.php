@@ -21,10 +21,7 @@ class ProfileTest extends EntityKernelTestBase {
    * @var array
    */
   public static $modules = [
-    'user',
-    'system',
-    'field',
-    'text',
+    'entity',
     'profile',
     'views',
   ];

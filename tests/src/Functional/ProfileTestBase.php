@@ -116,12 +116,11 @@ abstract class ProfileTestBase extends BrowserTestBase {
 
     $this->checkPermissions([
       'administer profile types',
+      "create $id profile",
       "view own $id profile",
       "view any $id profile",
-      "add own $id profile",
-      "add any $id profile",
-      "edit own $id profile",
-      "edit any $id profile",
+      "update own $id profile",
+      "update any $id profile",
       "delete own $id profile",
       "delete any $id profile",
     ]);
@@ -129,10 +128,10 @@ abstract class ProfileTestBase extends BrowserTestBase {
     user_role_grant_permissions(AccountInterface::AUTHENTICATED_ROLE, ['access user profiles']);
     $this->adminUser = $this->drupalCreateUser([
       'administer profile types',
-      'administer profiles',
+      'administer profile',
       "view any $id profile",
-      "add any $id profile",
-      "edit any $id profile",
+      "create $id profile",
+      "update any $id profile",
       "delete any $id profile",
     ]);
   }

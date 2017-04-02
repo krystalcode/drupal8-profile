@@ -23,7 +23,6 @@ class ProfileTypeCRUDTest extends ProfileTestBase {
       'administer profile types',
       'administer profile fields',
       'administer profile display',
-      'bypass profile access',
     ]);
   }
 
