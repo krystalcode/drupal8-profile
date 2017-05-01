@@ -31,7 +31,7 @@ class ProfileLabelEvent extends Event {
    *
    * @param \Drupal\profile\Entity\ProfileInterface $profile
    *   The profile.
-   * @param array $label
+   * @param string $label
    *   The profile label.
    */
   public function __construct(ProfileInterface $profile, $label) {

@@ -25,7 +25,7 @@ class ProfileForm extends ContentEntityForm {
     if ($profile->isActive() && !$profile->isDefault()){
       // Add a "make default" button.
       $element['set_default'] = $element['submit'];
-      $element['set_default']['#value'] = t('Save and make default');
+      $element['set_default']['#value'] = $this->t('Save and make default');
       $element['set_default']['#weight'] = 10;
       array_unshift($element['set_default']['#submit'], [$this, 'setDefault']);
     }

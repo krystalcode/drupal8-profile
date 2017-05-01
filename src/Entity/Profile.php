@@ -8,6 +8,7 @@ use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Entity\ContentEntityBase;
+use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\profile\Event\ProfileEvents;
 use Drupal\profile\Event\ProfileLabelEvent;
 use Drupal\user\UserInterface;
@@ -64,13 +65,14 @@ use Drupal\user\UserInterface;
 class Profile extends ContentEntityBase implements ProfileInterface {
 
   use EntityChangedTrait;
+  use StringTranslationTrait;
 
   /**
    * {@inheritdoc}
    */
   public function label() {
     $profile_type = ProfileType::load($this->bundle());
-    $label = t('@type profile #@id', [
+    $label = $this->t('@type profile #@id', [
       '@type' => $profile_type->label(),
       '@id' => $this->id(),
     ]);

@@ -83,7 +83,7 @@ class ProfileTypeForm extends BundleEntityFormBase {
       $this->getEntity()->isNew()
     ) {
       $actions['save_continue'] = $actions['submit'];
-      $actions['save_continue']['#value'] = t('Save and manage fields');
+      $actions['save_continue']['#value'] = $this->t('Save and manage fields');
       $actions['save_continue']['#submit'][] = [$this, 'redirectToFieldUI'];
     }
     return $actions;
@@ -97,10 +97,10 @@ class ProfileTypeForm extends BundleEntityFormBase {
     $status = $type->save();
 
     if ($status == SAVED_UPDATED) {
-      drupal_set_message(t('%label profile type has been updated.', ['%label' => $type->label()]));
+      drupal_set_message($this->t('%label profile type has been updated.', ['%label' => $type->label()]));
     }
     else {
-      drupal_set_message(t('%label profile type has been created.', ['%label' => $type->label()]));
+      drupal_set_message($this->t('%label profile type has been created.', ['%label' => $type->label()]));
     }
     $form_state->setRedirect('entity.profile_type.collection');
   }
