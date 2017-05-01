@@ -18,21 +18,15 @@ class ProfileForm extends ContentEntityForm {
     $element = parent::actions($form, $form_state);
     /** @var \Drupal\profile\Entity\ProfileInterface $profile */
     $profile = $this->entity;
-    /** @var \Drupal\profile\Entity\ProfileTypeInterface $bundle */
-    $bundle = $this->entityTypeManager->getStorage('profile_type')->load($profile->bundle());
 
-    // If this is a new profile, the Save button should set it as the default
-    // automatically. Otherwise, display a "make default" button if the profile
-    // type supports multiple profiles.
-    if ($profile->isNew() && !$bundle->getMultiple()) {
-      array_unshift($element['submit']['#submit'], [$this, 'setDefault']);
-    }
-    elseif ($bundle->getMultiple()) {
-      // Add a "Set Default" button.
+    // Display a "make default" button if:
+    // - this is an active profile and
+    // - this is not the default profile.
+    if ($profile->isActive() && !$profile->isDefault()){
+      // Add a "make default" button.
       $element['set_default'] = $element['submit'];
       $element['set_default']['#value'] = t('Save and make default');
       $element['set_default']['#weight'] = 10;
-      $element['set_default']['#access'] = !$profile->isDefault();
       array_unshift($element['set_default']['#submit'], [$this, 'setDefault']);
     }
 
@@ -61,7 +55,6 @@ class ProfileForm extends ContentEntityForm {
    */
   public function deactivate(array $form, FormStateInterface $form_state) {
     $form_state->setValue('status', FALSE);
-    $form_state->setValue('is_default', TRUE);
   }
 
   /**

@@ -61,6 +61,9 @@ class ProfileRegisterFormTest extends ProfileTestBase {
       ->loadByUser($new_user, $this->type->id());
 
     $this->assertEquals($profile->get($field_name)->value, $edit["entity_" . $id . "[$field_name][0][value]"], 'Field value found in loaded profile.');
+    // Verify that, as the first profile of this type for the user, it was set
+    // as default.
+    $this->assertTrue($profile->isDefault());
 
     // Verify that the profile field value appears on the user account page.
     $this->drupalGet('user');

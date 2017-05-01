@@ -80,7 +80,7 @@ class ProfileTest extends EntityKernelTestBase {
 
     // Create a new profile.
     /** @var \Drupal\profile\Entity\ProfileInterface $profile */
-    $profile = $this->profileStorage->create($expected = [
+    $profile = $this->profileStorage->create([
       'type' => $types['profile_type_0']->id(),
       'uid' => $this->user1->id(),
     ]);
@@ -151,7 +151,7 @@ class ProfileTest extends EntityKernelTestBase {
     ]);
 
     // Create new profiles.
-    $profile1 = Profile::create($expected = [
+    $profile1 = Profile::create([
       'type' => $profile_type->id(),
       'uid' => $this->user1->id(),
     ]);
@@ -173,23 +173,36 @@ class ProfileTest extends EntityKernelTestBase {
       'label' => 'test_defaults',
     ]);
 
-    // Create new profiles.
-    $profile1 = Profile::create($expected = [
+    // Create a new profile.
+    $profile1 = Profile::create([
       'type' => $profile_type->id(),
       'uid' => $this->user1->id(),
     ]);
     $profile1->save();
-    $profile2 = Profile::create($expected = [
+
+    // Verify that the first profile of this type is default.
+    $this->assertTrue($profile1->isDefault());
+
+    // Create a second new profile.
+    $profile2 = Profile::create([
       'type' => $profile_type->id(),
       'uid' => $this->user1->id(),
     ]);
     $profile2->setDefault(TRUE);
     $profile2->save();
 
-    $this->assertFalse($profile1->isDefault());
-    $this->assertTrue($profile2->isDefault());
+    $this->assertFalse($this->reloadEntity($profile1)->isDefault());
+    $this->assertTrue($this->reloadEntity($profile2)->isDefault());
 
     $profile1->setDefault(TRUE)->save();
+    $this->assertFalse($this->reloadEntity($profile2)->isDefault());
+    $this->assertTrue($this->reloadEntity($profile1)->isDefault());
+
+    // Verify that a deactivated profile cannot be the default and that if the
+    // current default is disactivated another default is set.
+    $profile2->setActive(FALSE);
+    $profile2->save();
+
     $this->assertFalse($this->reloadEntity($profile2)->isDefault());
     $this->assertTrue($this->reloadEntity($profile1)->isDefault());
   }
@@ -204,13 +217,13 @@ class ProfileTest extends EntityKernelTestBase {
     ]);
 
     // Create new profiles.
-    $profile1 = Profile::create($expected = [
+    $profile1 = Profile::create([
       'type' => $profile_type->id(),
       'uid' => $this->user1->id(),
     ]);
     $profile1->setActive(TRUE);
     $profile1->save();
-    $profile2 = Profile::create($expected = [
+    $profile2 = Profile::create([
       'type' => $profile_type->id(),
       'uid' => $this->user1->id(),
     ]);

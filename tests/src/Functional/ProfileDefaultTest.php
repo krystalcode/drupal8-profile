@@ -77,32 +77,33 @@ class ProfileDefaultTest extends ProfileTestBase {
     ]);
 
     // Create new profiles.
-    $profile1 = Profile::create($expected = [
+    $profile1 = Profile::create([
       'type' => $type->id(),
       'uid' => $this->user1->id(),
     ]);
     $profile1->save();
-    $profile2 = Profile::create($expected = [
+    $profile2 = Profile::create([
       'type' => $type->id(),
       'uid' => $this->user1->id(),
     ]);
-    $profile2->setDefault(TRUE);
     $profile2->save();
 
-    $this->assertFalse($profile1->isDefault());
-    $this->assertTrue($profile2->isDefault());
+    // Verify that the first profile of this type is default.
+    $this->assertTrue($profile1->isDefault());
+    $this->assertFalse($profile2->isDefault());
 
     $this->drupalLogin($admin_user);
 
-    $this->drupalGet($profile2->toUrl('edit-form')->toString());
+    $this->drupalGet($profile1->toUrl('edit-form')->toString());
     $this->assertSession()->buttonNotExists('Save and make default');
 
-    $this->drupalGet($profile1->toUrl('edit-form')->toString());
+    $this->drupalGet($profile2->toUrl('edit-form')->toString());
+    $this->assertSession()->buttonExists('Save and make default');
     $this->submitForm([], 'Save and make default');
 
     \Drupal::entityTypeManager()->getStorage('profile')->resetCache([$profile1->id(), $profile2->id()]);
-    $this->assertTrue(Profile::load($profile1->id())->isDefault());
-    $this->assertFalse(Profile::load($profile2->id())->isDefault());
+    $this->assertFalse(Profile::load($profile1->id())->isDefault());
+    $this->assertTrue(Profile::load($profile2->id())->isDefault());
   }
 
 }

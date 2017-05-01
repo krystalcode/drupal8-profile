@@ -202,6 +202,26 @@ class Profile extends ContentEntityBase implements ProfileInterface {
   /**
    * {@inheritdoc}
    */
+  public function preSave(EntityStorageInterface $storage) {
+    /** @var \Drupal\profile\ProfileStorage $storage */
+    parent::preSave($storage);
+
+    // If this profile is active and the owner has no current default profile
+    // of this type, set this as the default.
+    if ($this->isActive() &&
+      !$this->isDefault() &&
+      !$storage->loadDefaultByUser($this->getOwner(), $this->bundle())) {
+      $this->setDefault(TRUE);
+    }
+    // Only active profiles can be default.
+    elseif (!$this->isActive() && $this->isDefault()) {
+      $this->setDefault(FALSE);
+    }
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     /** @var \Drupal\profile\ProfileStorage $storage */
     parent::postSave($storage, $update);
@@ -217,6 +237,14 @@ class Profile extends ContentEntityBase implements ProfileInterface {
           $profile->setDefault(FALSE);
           $profile->save();
         }
+      }
+    }
+    // If this isn't the default, try to set a new one.
+    elseif (!$storage->loadDefaultByUser($this->getOwner(), $this->bundle())) {
+      /** @var \Drupal\profile\Entity\ProfileInterface $profile */
+      if ($profile = $storage->loadByUser($this->getOwner(), $this->bundle())) {
+        $profile->setDefault(TRUE);
+        $profile->save();
       }
     }
   }
