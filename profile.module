@@ -128,13 +128,16 @@ function profile_user_view(array &$build, UserInterface $account, EntityViewDisp
 function profile_entity_extra_field_info() {
   $extra = [];
 
-  // Add each profile type as an extra field for display. Enabled by default.
+  // Add each profile type as an extra field for display. Not enabled by default
+  // as many sites will not need this and it otherwise also gets added
+  // automatically to other view modes.
+  /** @var \Drupal\profile\Entity\ProfileType $bundle */
   foreach (ProfileType::loadMultiple() as $bundle) {
     $extra['user']['user']['display']['profile_' . $bundle->id()] = array(
       'label' => $bundle->label(),
       'description' => t('Display @type profiles', ['@type' => $bundle->label()]),
       'weight' => 10,
-      'visible' => TRUE,
+      'visible' => FALSE,
     );
   }
   return $extra;

@@ -48,8 +48,6 @@ class ProfileFieldAccessTest extends ProfileTestBase {
 
   /**
    * Tests private profile field access.
-   *
-   * @todo Fix in https://www.drupal.org/node/2854336
    */
   public function testPrivateField() {
     $this->field->setThirdPartySetting('profile', 'profile_private', TRUE);
@@ -83,30 +81,33 @@ class ProfileFieldAccessTest extends ProfileTestBase {
 
     // Fill in a field value.
     $this->drupalLogin($this->webUser);
-    $uid = $this->webUser->id();
     $secret = $this->randomMachineName();
     $not_secret = $this->randomMachineName();
-    $this->drupalGet("user/$uid/{$this->type->id()}");
+    $this->drupalGet("user/{$this->webUser->id()}/{$this->type->id()}");
     $edit = [
       'profile_fullname[0][value]' => $secret,
       'profile_bio[0][value]' => $not_secret,
     ];
     $this->submitForm($edit, 'Save');
 
+    /** @var \Drupal\profile\ProfileStorageInterface $storage */
+    $storage = $this->container->get('entity_type.manager')->getStorage('profile');
+    $web_user_profile = $storage->loadDefaultByUser($this->webUser, $this->type->id());
+
     // Verify that the private field value appears for the profile owner.
-    $this->drupalGet($this->webUser->toUrl());
+    $this->drupalGet($web_user_profile->toUrl());
     $this->assertSession()->pageTextContains($secret);
     $this->assertSession()->pageTextContains($not_secret);
 
     // Verify that the private field value does not appear for other users.
     $this->drupalLogin($this->otherUser);
-    $this->drupalGet($this->webUser->toUrl());
+    $this->drupalGet($web_user_profile->toUrl());
     $this->assertSession()->pageTextNotContains($secret);
     $this->assertSession()->pageTextContains($not_secret);
 
     // Verify that the private field value appears for the administrator.
     $this->drupalLogin($this->adminUser);
-    $this->drupalGet($this->webUser->toUrl());
+    $this->drupalGet($web_user_profile->toUrl());
     $this->assertSession()->pageTextContains($secret);
     $this->assertSession()->pageTextContains($not_secret);
   }

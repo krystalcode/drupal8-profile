@@ -55,10 +55,11 @@ class ProfileRegisterFormTest extends ProfileTestBase {
     $new_user = user_load_by_name($name);
     $this->assertTrue($new_user->isActive(), 'New account is active after registration.');
 
+    /** @var \Drupal\profile\ProfileStorageInterface $storage */
+    $storage = $this->container->get('entity_type.manager')->getStorage('profile');
+
     // Verify that a new profile was created for the new user ID.
-    $profile = $this->container->get('entity_type.manager')
-      ->getStorage('profile')
-      ->loadByUser($new_user, $this->type->id());
+    $profile = $storage->loadDefaultByUser($new_user, $this->type->id());
 
     $this->assertEquals($profile->get($field_name)->value, $edit["entity_" . $id . "[$field_name][0][value]"], 'Field value found in loaded profile.');
     // Verify that, as the first profile of this type for the user, it was set
@@ -66,7 +67,7 @@ class ProfileRegisterFormTest extends ProfileTestBase {
     $this->assertTrue($profile->isDefault());
 
     // Verify that the profile field value appears on the user account page.
-    $this->drupalGet('user');
+    $this->drupalGet($profile->toUrl()->toString());
     $this->assertSession()->pageTextContains($edit["entity_" . $id . "[$field_name][0][value]"]);
   }
 
