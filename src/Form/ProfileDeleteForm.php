@@ -3,6 +3,7 @@
 namespace Drupal\profile\Form;
 
 use Drupal\Core\Entity\ContentEntityDeleteForm;
+use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
@@ -33,9 +34,14 @@ class ProfileDeleteForm extends ContentEntityDeleteForm {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return new Url('entity.user.canonical', [
-      'user' => $this->entity->getOwnerId(),
-    ]);
+    /** @var \Drupal\profile\Entity\ProfileInterface $entity */
+    $entity = $this->entity;
+    if ($entity->getOwnerId()) {
+      return Url::fromRoute('entity.user.canonical', [
+        'user' => $entity->getOwnerId(),
+      ]);
+    }
+    return Url::fromRoute('entity.profile.collection');
   }
 
   /**

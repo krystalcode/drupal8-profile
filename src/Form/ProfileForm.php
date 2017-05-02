@@ -4,7 +4,6 @@ namespace Drupal\profile\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\profile\Entity\ProfileType;
 
 /**
  * Form controller for profile forms.
@@ -71,9 +70,15 @@ class ProfileForm extends ContentEntityForm {
         break;
     }
 
-    $form_state->setRedirect('entity.user.canonical', [
-      'user' => $this->entity->getOwnerId(),
-    ]);
+    if ($this->entity->getOwnerId()) {
+      $form_state->setRedirect('entity.user.canonical', [
+        'user' => $this->entity->getOwnerId(),
+      ]);
+    }
+    else {
+      $form_state->setRedirect('entity.profile.collection');
+    }
+
   }
 
 }
