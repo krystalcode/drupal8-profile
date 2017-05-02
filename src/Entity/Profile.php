@@ -49,7 +49,6 @@ use Drupal\user\UserInterface;
  *     "id" = "profile_id",
  *     "revision" = "revision_id",
  *     "bundle" = "type",
- *     "langcode" = "langcode",
  *     "uuid" = "uuid"
  *   },
  *  links = {
