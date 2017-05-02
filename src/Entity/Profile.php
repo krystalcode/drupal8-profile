@@ -210,14 +210,16 @@ class Profile extends ContentEntityBase implements ProfileInterface {
 
     // If this profile is active and the owner has no current default profile
     // of this type, set this as the default.
-    if ($this->isActive() &&
-      !$this->isDefault() &&
-      !$storage->loadDefaultByUser($this->getOwner(), $this->bundle())) {
-      $this->setDefault(TRUE);
-    }
-    // Only active profiles can be default.
-    elseif (!$this->isActive() && $this->isDefault()) {
-      $this->setDefault(FALSE);
+    if ($this->getOwner()) {
+      if ($this->isActive() && !$this->isDefault()) {
+        if (!$storage->loadDefaultByUser($this->getOwner(), $this->bundle())) {
+          $this->setDefault(TRUE);
+        }
+      }
+      // Only active profiles can be default.
+      elseif (!$this->isActive()) {
+        $this->setDefault(FALSE);
+      }
     }
   }
 
@@ -229,24 +231,26 @@ class Profile extends ContentEntityBase implements ProfileInterface {
     parent::postSave($storage, $update);
 
     // Check if this profile is, or became the default.
-    if ($this->isDefault()) {
-      /** @var \Drupal\profile\Entity\ProfileInterface[] $profiles */
-      $profiles = $storage->loadMultipleByUser($this->getOwner(), $this->bundle());
+    if ($this->getOwner()) {
+      if ($this->isDefault()) {
+        /** @var \Drupal\profile\Entity\ProfileInterface[] $profiles */
+        $profiles = $storage->loadMultipleByUser($this->getOwner(), $this->bundle());
 
-      // Ensure that all other profiles are set to not default.
-      foreach ($profiles as $profile) {
-        if ($profile->id() != $this->id() && $profile->isDefault()) {
-          $profile->setDefault(FALSE);
-          $profile->save();
+        // Ensure that all other profiles are set to not default.
+        foreach ($profiles as $profile) {
+          if ($profile->id() != $this->id() && $profile->isDefault()) {
+            $profile->setDefault(FALSE);
+            $profile->save();
+          }
         }
       }
-    }
-    // If this isn't the default, try to set a new one.
-    elseif (!$storage->loadDefaultByUser($this->getOwner(), $this->bundle())) {
-      /** @var \Drupal\profile\Entity\ProfileInterface $profile */
-      if ($profile = $storage->loadByUser($this->getOwner(), $this->bundle())) {
-        $profile->setDefault(TRUE);
-        $profile->save();
+      // If this isn't the default, try to set a new one.
+      elseif (!$storage->loadDefaultByUser($this->getOwner(), $this->bundle())) {
+        /** @var \Drupal\profile\Entity\ProfileInterface $profile */
+        if ($profile = $storage->loadByUser($this->getOwner(), $this->bundle())) {
+          $profile->setDefault(TRUE);
+          $profile->save();
+        }
       }
     }
   }

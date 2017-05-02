@@ -236,6 +236,11 @@ class ProfileTest extends EntityKernelTestBase {
 
     $default_profile = $storage->loadDefaultByUser($this->user1, $profile_type->id());
     $this->assertEquals($profile2->id(), $default_profile->id());
+
+    // Ensure that \Drupal\profile\Entity\Profile::preSave doesn't crash.
+    $anonymous_profile = Profile::create(['type' => $profile_type->id()]);
+    $anonymous_profile->save();
+    $this->assertEmpty($anonymous_profile->getOwner());
   }
 
 }
