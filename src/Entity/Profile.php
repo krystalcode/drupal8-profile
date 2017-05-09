@@ -35,7 +35,7 @@ use Drupal\user\UserInterface;
  *       "delete" = "Drupal\profile\Form\ProfileDeleteForm",
  *     },
  *     "route_provider" = {
- *       "html" = "Drupal\profile\ProfileHtmlRouteProvider",
+ *       "html" = "Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider",
  *     },
  *   },
  *   bundle_entity_type = "profile_type",

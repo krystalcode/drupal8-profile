@@ -169,8 +169,6 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
     // Rebuild module data to generate bundle permissions and link tasks.
     if (!$update) {
       system_rebuild_module_data();
-      // @todo Setting ->setRebuildNeeded isn't enough. Investigate.
-      \Drupal::service('router.builder')->rebuild();
     }
   }
 

@@ -23,6 +23,21 @@ entity.profile_type.add_form:
   requirements:
     _permission: 'administer profile types'
 
+entity.profile.type.user_profile_form:
+  path: '/user/{user}/{profile_type}'
+  defaults:
+    _controller: '\Drupal\profile\Controller\ProfileController::userProfileForm'
+    _title_callback: '\Drupal\profile\Controller\ProfileController::addPageTitle'
+  requirements:
+    _profile_access_check: 'add'
+
+entity.profile.type.user_profile_form.add:
+  path: '/user/{user}/{profile_type}/add'
+  defaults:
+    _controller: '\Drupal\profile\Controller\ProfileController::addProfile'
+  requirements:
+    _profile_access_check: 'add'
+
 entity.profile.add_form:
   path: '/user/{user}/profile/{profile_type}'
   defaults:

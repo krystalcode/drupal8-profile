@@ -19,7 +19,7 @@ class ProfileTest extends ProfileTestBase {
     $this->drupalLogin($this->adminUser);
 
     $profile_fullname = $this->randomString();
-    $create_url = Url::fromRoute("entity.profile.type.{$this->type->id()}.user_profile_form", [
+    $create_url = Url::fromRoute('entity.profile.type.user_profile_form', [
       'user' => $this->loggedInUser->id(),
       'profile_type' => $this->type->id(),
     ]);
