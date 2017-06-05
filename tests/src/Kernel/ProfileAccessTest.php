@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\profile\Kernel;
 
-use Drupal\Component\Utility\SafeMarkup;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 use Drupal\profile\Entity\Profile;
@@ -83,7 +82,6 @@ class ProfileAccessTest extends EntityKernelTestBase {
       ['user' => $web_user1->id(), 'profile_type' => $this->type->id()],
       $web_user1
     ));
-
 
     // Test user with permission to only add a profile.
     $web_user2 = $this->createUser([], ["create {$this->type->id()} profile"]);
@@ -172,7 +170,7 @@ class ProfileAccessTest extends EntityKernelTestBase {
     $this->assertFalse($profile2->access('view', User::getAnonymousUser()));
 
     // @todo Fix in https://www.drupal.org/node/2820209
-    // user_role_grant_permissions(AccountInterface::ANONYMOUS_ROLE, ["view any {$this->type->id()} profile"]);
+    user_role_grant_permissions(AccountInterface::ANONYMOUS_ROLE, ["view any {$this->type->id()} profile"]);
     // $this->assertTrue($profile1->access('view', User::getAnonymousUser()));
     // $this->assertTrue($profile2->access('view', User::getAnonymousUser()));
   }

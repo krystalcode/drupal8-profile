@@ -1,6 +1,7 @@
 <?php
 
 namespace Drupal\Tests\profile\Functional;
+
 use Drupal\field\Entity\FieldConfig;
 use Drupal\field\Entity\FieldStorageConfig;
 
@@ -12,11 +13,15 @@ use Drupal\field\Entity\FieldStorageConfig;
 class ProfileFieldAccessTest extends ProfileTestBase {
 
   /**
+   * A test user.
+   *
    * @var \Drupal\user\Entity\User
    */
   protected $webUser;
 
   /**
+   * A test user.
+   *
    * @var \Drupal\user\Entity\User
    */
   protected $otherUser;

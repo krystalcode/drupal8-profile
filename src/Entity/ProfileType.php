@@ -54,7 +54,7 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
   /**
    * The primary identifier of the profile type.
    *
-   * @var integer
+   * @var int
    */
   protected $id;
 
@@ -75,14 +75,14 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
   /**
    * Whether the profile type is shown during registration.
    *
-   * @var boolean
+   * @var bool
    */
   protected $registration = FALSE;
 
   /**
    * Whether the profile type allows multiple profiles.
    *
-   * @var boolean
+   * @var bool
    */
   protected $multiple = FALSE;
 
@@ -96,7 +96,7 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
   /**
    * The weight of the profile type compared to others.
    *
-   * @var integer
+   * @var int
    */
   protected $weight = 0;
 
@@ -140,7 +140,7 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
   /**
    * {@inheritdoc}
    */
-  public function setRoles($roles) {
+  public function setRoles(array $roles) {
     $this->roles = $roles;
     return $this;
   }

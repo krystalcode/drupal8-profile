@@ -13,7 +13,6 @@ use Drupal\profile\Event\ProfileEvents;
 use Drupal\profile\Event\ProfileLabelEvent;
 use Drupal\user\UserInterface;
 
-
 /**
  * Defines the profile entity class.
  *

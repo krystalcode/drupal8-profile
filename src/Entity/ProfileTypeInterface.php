@@ -50,7 +50,7 @@ interface ProfileTypeInterface extends ConfigEntityInterface {
    *
    * @return $this
    */
-  public function setRoles($roles);
+  public function setRoles(array $roles);
 
   /**
    * Returns the profile type's weight.

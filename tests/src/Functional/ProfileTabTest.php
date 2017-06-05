@@ -27,7 +27,7 @@ class ProfileTabTest extends ProfileTestBase {
   /**
    * Testing demo user 2.
    *
-   * @var \Drupal\user\UserInterface;
+   * @var \Drupal\user\UserInterface
    */
   public $user2;
 

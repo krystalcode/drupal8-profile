@@ -106,8 +106,9 @@ class ProfileController extends ControllerBase implements ContainerInjectionInte
     /** @var \Drupal\profile\Entity\ProfileType $profile_type */
 
     /** @var \Drupal\profile\Entity\ProfileInterface|bool $active_profile */
-    $active_profile = $this->entityTypeManager()->getStorage('profile')
-                           ->loadByUser($user, $profile_type->id());
+    $active_profile = $this->entityTypeManager()
+      ->getStorage('profile')
+      ->loadByUser($user, $profile_type->id());
 
     // If the profile type does not support multiple, only display an add form
     // if there are no entities, or an edit for the current.

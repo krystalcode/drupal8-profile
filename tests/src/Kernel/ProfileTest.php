@@ -6,7 +6,6 @@ use Drupal\Core\StringTranslation\TranslatableMarkup;
 use Drupal\KernelTests\Core\Entity\EntityKernelTestBase;
 use Drupal\profile\Entity\Profile;
 use Drupal\profile\Entity\ProfileType;
-use Drupal\profile\ProfileTestTrait;
 
 /**
  * Tests basic functionality of profiles.
@@ -36,7 +35,7 @@ class ProfileTest extends EntityKernelTestBase {
   /**
    * Testing demo user 2.
    *
-   * @var \Drupal\user\UserInterface;
+   * @var \Drupal\user\UserInterface
    */
   public $user2;
 
