@@ -25,6 +25,7 @@ class ProfileTest extends ProfileTestBase {
     ]);
     $this->drupalGet($create_url->toString());
     $this->assertSession()->titleEquals("Create {$this->type->label()} | Drupal");
+    $this->assertSession()->buttonNotExists('Save and make default');
     $edit = [
       'profile_fullname[0][value]' => $profile_fullname,
     ];

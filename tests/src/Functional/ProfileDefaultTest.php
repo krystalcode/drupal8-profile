@@ -96,8 +96,10 @@ class ProfileDefaultTest extends ProfileTestBase {
 
     $this->drupalGet($profile1->toUrl('edit-form')->toString());
     $this->assertSession()->buttonNotExists('Save and make default');
+    $this->assertSession()->buttonExists('Save');
 
     $this->drupalGet($profile2->toUrl('edit-form')->toString());
+    $this->assertSession()->buttonExists('Save');
     $this->assertSession()->buttonExists('Save and make default');
     $this->submitForm([], 'Save and make default');
 

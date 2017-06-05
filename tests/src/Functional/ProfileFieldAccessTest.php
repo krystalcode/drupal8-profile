@@ -88,6 +88,7 @@ class ProfileFieldAccessTest extends ProfileTestBase {
       'profile_fullname[0][value]' => $secret,
       'profile_bio[0][value]' => $not_secret,
     ];
+    $this->assertSession()->buttonNotExists('Save and make default');
     $this->submitForm($edit, 'Save');
 
     /** @var \Drupal\profile\ProfileStorageInterface $storage */
