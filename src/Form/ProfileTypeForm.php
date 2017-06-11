@@ -18,6 +18,7 @@ class ProfileTypeForm extends BundleEntityFormBase {
    */
   public function form(array $form, FormStateInterface $form_state) {
     $form = parent::form($form, $form_state);
+    /** @var \Drupal\profile\Entity\ProfileTypeInterface $type */
     $type = $this->entity;
 
     if ($this->operation == 'add') {
@@ -69,6 +70,12 @@ class ProfileTypeForm extends BundleEntityFormBase {
         $form['roles']['#options'][$role->id()] = $role->label();
       }
     }
+
+    $form['use_revisions'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Create a new revision when a profile is modified'),
+      '#default_value' => $type->shouldCreateNewRevision(),
+    ];
 
     return $this->protectBundleIdElement($form);
   }

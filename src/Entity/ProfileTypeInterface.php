@@ -3,11 +3,12 @@
 namespace Drupal\profile\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityInterface;
+use Drupal\Core\Entity\RevisionableEntityBundleInterface;
 
 /**
  * Provides an interface defining a profile type entity.
  */
-interface ProfileTypeInterface extends ConfigEntityInterface {
+interface ProfileTypeInterface extends ConfigEntityInterface, RevisionableEntityBundleInterface {
 
   /**
    * Return the registration form flag.

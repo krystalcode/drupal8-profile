@@ -97,7 +97,7 @@ abstract class ProfileTestBase extends BrowserTestBase {
       ->setComponent($this->field->getName(), ['type' => 'string'])
       ->save();
 
-    // Configure rhe default form.
+    // Configure the default form.
     $this->form = EntityFormDisplay::load("profile.{$this->type->id()}.default");
     if (!$this->form) {
       $this->form = EntityFormDisplay::create([

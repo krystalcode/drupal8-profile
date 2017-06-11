@@ -38,7 +38,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *     "roles",
  *     "weight",
  *     "status",
- *     "langcode"
+ *     "langcode",
+ *     "use_revisions"
  *   },
  *   links = {
  *     "add-form" = "/admin/config/people/profiles/types/add",
@@ -101,6 +102,13 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
   protected $weight = 0;
 
   /**
+   * Should profiles of this type always generate revisions.
+   *
+   * @var bool
+   */
+  protected $use_revisions = FALSE;
+
+  /**
    * {@inheritdoc}
    */
   public function getRegistration() {
@@ -158,6 +166,13 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
   public function setWeight($weight) {
     $this->weight = $weight;
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function shouldCreateNewRevision() {
+    return $this->use_revisions;
   }
 
   /**

@@ -4,6 +4,7 @@ namespace Drupal\Tests\profile\Functional;
 
 use Drupal\Component\Render\FormattableMarkup;
 use Drupal\Component\Utility\Unicode;
+use Drupal\profile\Entity\ProfileType;
 
 /**
  * Tests basic CRUD functionality of profile types.
@@ -50,7 +51,7 @@ class ProfileTypeCRUDTest extends ProfileTestBase {
 
     $this->assertUrl('admin/config/people/profiles/types/add');
     $id = Unicode::strtolower($this->randomMachineName());
-    $label = $this->randomString();
+    $label = $this->getRandomGenerator()->word(10);
     $edit = [
       'id' => $id,
       'label' => $label,
@@ -66,12 +67,16 @@ class ProfileTypeCRUDTest extends ProfileTestBase {
     // Edit the new profile type.
     $this->drupalGet("admin/config/people/profiles/types/manage/$id");
     $this->assertRaw(new FormattableMarkup('Edit %label profile type', ['%label' => $label]));
-    $edit = [
-      'registration' => 1,
-    ];
-    $this->drupalPostForm(NULL, $edit, t('Save'));
+    $this->getSession()->getPage()->checkField('Include in user registration form');
+    $this->getSession()->getPage()->checkField('Create a new revision when a profile is modified');
+    $this->submitForm([], 'Save');
     $this->assertUrl('admin/config/people/profiles/types');
     $this->assertRaw(new FormattableMarkup('%label profile type has been updated.', ['%label' => $label]));
+
+    $profile_type = ProfileType::load($id);
+    $this->assertEquals($label, $profile_type->label());
+    $this->assertTrue($profile_type->getRegistration());
+    $this->assertTrue($profile_type->shouldCreateNewRevision());
   }
 
 }
