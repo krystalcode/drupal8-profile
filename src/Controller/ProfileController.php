@@ -76,7 +76,7 @@ class ProfileController extends ControllerBase implements ContainerInjectionInte
   }
 
   /**
-   * The _title_callback for the entity.profile.add_form route.
+   * The _title_callback for the add profile form route.
    *
    * @param \Drupal\profile\Entity\ProfileTypeInterface $profile_type
    *   The current profile type.

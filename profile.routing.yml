@@ -35,17 +35,9 @@ entity.profile.type.user_profile_form.add:
   path: '/user/{user}/{profile_type}/add'
   defaults:
     _controller: '\Drupal\profile\Controller\ProfileController::addProfile'
+    _title_callback: '\Drupal\profile\Controller\ProfileController::addPageTitle'
   requirements:
     _profile_access_check: 'add'
-
-entity.profile.add_form:
-  path: '/user/{user}/profile/{profile_type}'
-  defaults:
-    _controller: '\Drupal\profile\Controller\ProfileController::addProfile'
-    _title: 'Add new profile'
-    operation: 'add'
-  requirements:
-    _profile_access_check: 'profile:{profile_type}'
 
 entity.profile.canonical:
   path: '/profile/{profile}'
