@@ -165,13 +165,14 @@ class ProfileController extends ControllerBase implements ContainerInjectionInte
    *   A redirect back to the currency listing.
    */
   public function setDefault(RouteMatchInterface $routeMatch) {
+    /** @var \Drupal\profile\Entity\ProfileInterface $profile */
     $profile = $routeMatch->getParameter('profile');
     $profile->setDefault(TRUE);
     $profile->save();
 
     drupal_set_message($this->t('The %label profile has been marked as default.', ['%label' => $profile->label()]));
 
-    $url = $profile->urlInfo('collection');
+    $url = $profile->toUrl('collection');
     return $this->redirect($url->getRouteName(), $url->getRouteParameters(), $url->getOptions());
   }
 

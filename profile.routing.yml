@@ -71,5 +71,5 @@ entity.profile.set_default:
       profile:
         type: entity:profile
   requirements:
-    _entity_access: 'profile.edit'
+    _entity_access: 'profile.update'
     _csrf_token: 'TRUE'
