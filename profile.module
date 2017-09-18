@@ -311,7 +311,9 @@ function profile_views_add_title_pre_render($element) {
   /** @var \Drupal\views\ViewExecutable $view */
   if (isset($element['#title'])) {
     $view = $element['view_build']['#view'];
-    $view->setTitle($element['#title']);
+    if (!empty($view->result)) {
+      $view->setTitle($element['#title']);
+    }
   }
 
   return $element;
