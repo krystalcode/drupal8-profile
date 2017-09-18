@@ -44,11 +44,11 @@ class ProfileTypeTest extends ProfileTestBase {
     $this->drupalLogin($this->adminUser);
 
     // Create a new profile type.
-    $this->drupalGet('admin/config/people/profiles/types');
+    $this->drupalGet('admin/config/people/profiles');
     $this->assertResponse(200);
     $this->clickLink(t('Add profile type'));
 
-    $this->assertUrl('admin/config/people/profiles/types/add');
+    $this->assertUrl('admin/config/people/profiles/add');
     $id = Unicode::strtolower($this->randomMachineName());
     $label = $this->randomString();
     $edit = [
@@ -56,21 +56,21 @@ class ProfileTypeTest extends ProfileTestBase {
       'label' => $label,
     ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
-    $this->assertUrl('admin/config/people/profiles/types');
+    $this->assertUrl('admin/config/people/profiles');
     $this->assertRaw(new FormattableMarkup('%label profile type has been created.', ['%label' => $label]));
-    $this->assertLinkByHref("admin/config/people/profiles/types/manage/$id");
-    $this->assertLinkByHref("admin/config/people/profiles/types/manage/$id/fields");
-    $this->assertLinkByHref("admin/config/people/profiles/types/manage/$id/display");
-    $this->assertLinkByHref("admin/config/people/profiles/types/manage/$id/delete");
+    $this->assertLinkByHref("admin/config/people/profiles/manage/$id");
+    $this->assertLinkByHref("admin/config/people/profiles/manage/$id/fields");
+    $this->assertLinkByHref("admin/config/people/profiles/manage/$id/display");
+    $this->assertLinkByHref("admin/config/people/profiles/manage/$id/delete");
 
     // Edit the new profile type.
-    $this->drupalGet("admin/config/people/profiles/types/manage/$id");
+    $this->drupalGet("admin/config/people/profiles/manage/$id");
     $this->assertRaw(new FormattableMarkup('Edit %label profile type', ['%label' => $label]));
     $edit = [
       'registration' => 1,
     ];
     $this->drupalPostForm(NULL, $edit, t('Save'));
-    $this->assertUrl('admin/config/people/profiles/types');
+    $this->assertUrl('admin/config/people/profiles');
     $this->assertRaw(new FormattableMarkup('%label profile type has been updated.', ['%label' => $label]));
   }
 
