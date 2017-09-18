@@ -3,6 +3,7 @@
 namespace Drupal\profile\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
+use Drupal\Core\Entity\EntityDescriptionInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
@@ -39,7 +40,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *     "weight",
  *     "status",
  *     "langcode",
- *     "use_revisions"
+ *     "use_revisions",
+ *     "description"
  *   },
  *   links = {
  *     "add-form" = "/admin/config/people/profiles/add",
@@ -72,6 +74,13 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
    * @var string
    */
   protected $label;
+
+  /**
+   * A brief description of the profile type.
+   *
+   * @var string
+   */
+  protected $description;
 
   /**
    * Whether the profile type is shown during registration.
@@ -178,6 +187,21 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
   /**
    * {@inheritdoc}
    */
+  public function getDescription() {
+    return $this->description;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setDescription($description) {
+    $this->description = $description;
+    return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function postSave(EntityStorageInterface $storage, $update = TRUE) {
     parent::postSave($storage, $update);
 
@@ -186,5 +210,4 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
       system_rebuild_module_data();
     }
   }
-
 }
