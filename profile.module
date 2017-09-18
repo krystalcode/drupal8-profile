@@ -88,7 +88,7 @@ function template_preprocess_profile(array &$variables) {
   $profile = $variables['elements']['#profile'];
 
   $variables['profile'] = $profile;
-  $variables['url'] = $profile->toUrl();
+  $variables['url'] = $profile->id() ? $profile->toUrl() : FALSE;
   // Helpful $content variable for templates.
   $variables['content'] = [];
   foreach (Element::children($variables['elements']) as $key) {
