@@ -351,6 +351,16 @@ function profile_views_data_alter(&$data) {
     'base field' => 'uid',
     'field' => 'uid',
   ];
+  $data['users_field_data']['profile_type']['relationship'] = [
+    'title' => t('Profile Type'),
+    'label' => t('Profile Type'),
+    'group' => 'User',
+    'help' => t('Reference to a specific profile type of a user.'),
+    'id' => 'profile_relationship',
+    'base' => 'profile',
+    'base field' => 'uid',
+    'field' => 'uid',
+  ];
 }
 
 /**
