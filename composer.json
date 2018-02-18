@@ -7,5 +7,8 @@
   "require": {
     "drupal/core": "~8.3",
     "drupal/entity": "^1.0@beta"
+  },
+  "require-dev": {
+    "drupal/token": "1.0"
   }
 }
