@@ -100,7 +100,7 @@ class ProfileController extends ControllerBase implements ContainerInjectionInte
    *   The profile type entity for the profile.
    *
    * @return array
-   *    Returns form array.
+   *   Returns form array.
    */
   public function userProfileForm(RouteMatchInterface $route_match, UserInterface $user, ProfileTypeInterface $profile_type) {
     /** @var \Drupal\profile\Entity\ProfileType $profile_type */

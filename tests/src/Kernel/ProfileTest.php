@@ -271,7 +271,6 @@ class ProfileTest extends EntityKernelTestBase {
     ]);
     $field->save();
 
-
     // Create new profiles.
     /** @var \Drupal\profile\Entity\Profile $profile1 */
     $profile1 = Profile::create([
