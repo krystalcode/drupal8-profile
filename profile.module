@@ -364,6 +364,14 @@ function profile_views_data_alter(&$data) {
     'base field' => 'uid',
     'field' => 'uid',
   ];
+
+  $data['profile']['profile_activate_deactivate_link'] = [
+    'field' => [
+      'title' => t('Activate/Deactivate Profile'),
+      'help' => t('Set the status of this profile to enabled/disabled depending on current status.'),
+      'id' => 'profile_activate_deactivate_link',
+    ],
+  ];
 }
 
 /**

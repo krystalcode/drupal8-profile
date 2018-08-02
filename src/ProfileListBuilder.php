@@ -7,6 +7,7 @@ use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityListBuilder;
 use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Routing\RedirectDestinationInterface;
@@ -41,6 +42,13 @@ class ProfileListBuilder extends EntityListBuilder {
   protected $redirectDestination;
 
   /**
+   * The entity type manager.
+   *
+   * @var \Drupal\Core\Entity\EntityTypeManagerInterface
+   */
+  protected $entityTypeManager;
+
+  /**
    * Constructs a new ProfileListController object.
    *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
@@ -51,13 +59,25 @@ class ProfileListBuilder extends EntityListBuilder {
    *   The date formatter service.
    * @param \Drupal\Core\Render\RendererInterface $renderer
    *   The renderer.
+   * @param \Drupal\Core\Routing\RedirectDestinationInterface $redirect_destination
+   *   The redirect destination service.
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   *   The entity type manager.
    */
-  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, DateFormatter $date_formatter, RendererInterface $renderer, RedirectDestinationInterface $redirect_destination) {
+  public function __construct(
+    EntityTypeInterface $entity_type,
+    EntityStorageInterface $storage,
+    DateFormatter $date_formatter,
+    RendererInterface $renderer,
+    RedirectDestinationInterface $redirect_destination,
+    EntityTypeManagerInterface $entityTypeManager
+  ) {
     parent::__construct($entity_type, $storage);
 
     $this->dateFormatter = $date_formatter;
     $this->renderer = $renderer;
     $this->redirectDestination = $redirect_destination;
+    $this->entityTypeManager = $entityTypeManager;
   }
 
   /**
@@ -69,7 +89,8 @@ class ProfileListBuilder extends EntityListBuilder {
       $container->get('entity.manager')->getStorage($entity_type->id()),
       $container->get('date.formatter'),
       $container->get('renderer'),
-      $container->get('redirect.destination')
+      $container->get('redirect.destination'),
+      $container->get('entity_type.manager')
     );
   }
 
@@ -134,6 +155,7 @@ class ProfileListBuilder extends EntityListBuilder {
    * {@inheritdoc}
    */
   public function getOperations(EntityInterface $entity) {
+    /** @var \Drupal\profile\Entity\ProfileInterface $entity */
     $operations = parent::getOperations($entity);
 
     $destination = $this->redirectDestination->getAsArray();
@@ -141,12 +163,39 @@ class ProfileListBuilder extends EntityListBuilder {
       $operations[$key]['query'] = $destination;
     }
 
-    if ($entity->isActive() && !$entity->isDefault()) {
-      $operations['set_default'] = [
-        'title' => $this->t('Mark as default'),
-        'url' => $entity->toUrl('set-default'),
-        'parameter' => $entity,
-      ];
+    $profile_type_storage = $this->entityTypeManager->getStorage('profile_type');
+    /** @var \Drupal\profile\Entity\ProfileTypeInterface $profile_type */
+    $profile_type = $profile_type_storage->load($entity->bundle());
+    /** @var \Drupal\Core\Session\AccountInterface $account */
+    $account = \Drupal::currentUser();
+    $own_any = ($account->id() === $entity->getOwnerId()) ? 'own' : 'any';
+    if ($account->hasPermission("activate/deactivate $own_any {$profile_type->id()} profile")) {
+      // If we the profile is enabled.
+      if ($entity->isActive()) {
+        // Display a deactivate button.
+        $operations['deactivate'] = [
+          'title' => $profile_type->getDeactivateProfileButtonLabel(),
+          'url' => $entity->toUrl('deactivate'),
+          'parameter' => $entity,
+        ];
+
+        if (!$entity->isDefault()) {
+          $operations['set_default'] = [
+            'title' => $this->t('Mark as default'),
+            'url' => $entity->toUrl('set-default'),
+            'parameter' => $entity,
+          ];
+        }
+      }
+      // Else, if the profile is not enabled.
+      else {
+        // Display an activate button.
+        $operations['activate'] = [
+          'title' => $profile_type->getActivateProfileButtonLabel(),
+          'url' => $entity->toUrl('activate'),
+          'parameter' => $entity,
+        ];
+      }
     }
 
     return $operations;

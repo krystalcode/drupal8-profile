@@ -6,15 +6,15 @@ use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Session\AccountInterface;
 
 /**
- * Publishes a profile.
+ * Activates/publishes a profile.
  *
  * @Action(
- *   id = "profile_publish_action",
- *   label = @Translation("Publish selected profile"),
+ *   id = "profile_activate_action",
+ *   label = @Translation("Activate selected profile"),
  *   type = "profile"
  * )
  */
-class PublishProfile extends ActionBase {
+class ActivateProfile extends ActionBase {
 
   /**
    * {@inheritdoc}
@@ -30,7 +30,7 @@ class PublishProfile extends ActionBase {
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     /** @var \Drupal\profile\Entity\ProfileInterface $object */
-    $result = $object->access('update', $account, TRUE)
+    $result = $object->access('activate/deactivate', $account, TRUE)
       ->andIf($object->status->access('edit', $account, TRUE));
 
     return $return_as_object ? $result : $result->isAllowed();

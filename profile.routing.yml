@@ -65,3 +65,25 @@ entity.profile.set_default:
   requirements:
     _entity_access: 'profile.update'
     _csrf_token: 'TRUE'
+
+entity.profile.activate:
+  path: '/profile/{profile}/activate'
+  defaults:
+    _controller: '\Drupal\profile\Controller\ProfileController::activate'
+  options:
+    parameters:
+      profile:
+        type: entity:profile
+  requirements:
+    _entity_access: 'profile.activate/deactivate'
+
+entity.profile.deactivate:
+  path: '/profile/{profile}/deactivate'
+  defaults:
+    _controller: '\Drupal\profile\Controller\ProfileController::deactivate'
+  options:
+    parameters:
+      profile:
+        type: entity:profile
+  requirements:
+    _entity_access: 'profile.activate/deactivate'

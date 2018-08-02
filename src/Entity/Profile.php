@@ -25,7 +25,7 @@ use Drupal\user\UserInterface;
  *     "view_builder" = "Drupal\profile\ProfileViewBuilder",
  *     "views_data" = "Drupal\profile\ProfileViewsData",
  *     "access" = "Drupal\profile\ProfileAccessControlHandler",
- *     "permission_provider" = "Drupal\entity\UncacheableEntityPermissionProvider",
+ *     "permission_provider" = "Drupal\profile\ProfilePermissionProvider",
  *     "list_builder" = "Drupal\profile\ProfileListBuilder",
  *     "form" = {
  *       "default" = "Drupal\profile\Form\ProfileForm",
@@ -55,6 +55,8 @@ use Drupal\user\UserInterface;
  *    "edit-form" = "/profile/{profile}/edit",
  *    "delete-form" = "/profile/{profile}/delete",
  *    "collection" = "/admin/config/people/profiles",
+ *    "activate" = "/profile/{profile}/activate",
+ *    "deactivate" = "/profile/{profile}/deactivate",
  *    "set-default" = "/profile/{profile}/set-default"
  *   },
  *   common_reference_target = TRUE,

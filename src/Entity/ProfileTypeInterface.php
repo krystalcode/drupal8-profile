@@ -19,6 +19,16 @@ interface ProfileTypeInterface extends ConfigEntityInterface, RevisionableEntity
   public function getRegistration();
 
   /**
+   * Return the activate button label.
+   */
+  public function getActivateProfileButtonLabel();
+
+  /**
+   * Return the deactivate button label.
+   */
+  public function getDeactivateProfileButtonLabel();
+
+  /**
    * Return the allow multiple flag.
    *
    * @return bool

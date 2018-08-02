@@ -3,6 +3,7 @@
 namespace Drupal\profile\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
+use Drupal\Core\Entity\EntityDescriptionInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
@@ -40,7 +41,9 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *     "status",
  *     "langcode",
  *     "use_revisions",
- *     "description"
+ *     "description",
+ *     "activate_profile_button_label",
+ *     "deactivate_profile_button_label"
  *   },
  *   links = {
  *     "add-form" = "/admin/config/people/profiles/add",
@@ -80,6 +83,20 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
    * @var string
    */
   protected $description;
+
+  /**
+   * Activate button label.
+   *
+   * @var string
+   */
+  protected $activate_profile_button_label;
+
+  /**
+   * De-activate button label.
+   *
+   * @var string
+   */
+  protected $deactivate_profile_button_label;
 
   /**
    * Whether the profile type is shown during registration.
@@ -196,6 +213,34 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
   public function setDescription($description) {
     $this->description = $description;
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getActivateProfileButtonLabel() {
+    return $this->activate_profile_button_label;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setActivateProfileButtonLabel($activate_button_label) {
+    return $this->activate_profile_button_label = $activate_button_label;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getDeactivateProfileButtonLabel() {
+    return $this->deactivate_profile_button_label;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setDeactivateProfileButtonLabel($deactivate_button_label) {
+    return $this->deactivate_profile_button_label = $deactivate_button_label;
   }
 
   /**
