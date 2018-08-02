@@ -3,7 +3,6 @@
 namespace Drupal\profile\Form;
 
 use Drupal\Core\Entity\ContentEntityDeleteForm;
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Url;
 
 /**
@@ -23,6 +22,16 @@ class ProfileDeleteForm extends ContentEntityDeleteForm {
   /**
    * {@inheritdoc}
    */
+  protected function getDeletionMessage() {
+    $entity = $this->getEntity();
+    return $this->t('%label has been deleted.', [
+      '%label' => $entity->label(),
+    ]);
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function getCancelUrl() {
     /** @var \Drupal\profile\Entity\ProfileInterface $entity */
     $entity = $this->entity;
@@ -32,33 +41,6 @@ class ProfileDeleteForm extends ContentEntityDeleteForm {
       ]);
     }
     return Url::fromRoute('entity.profile.collection');
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function submitForm(array &$form, FormStateInterface $form_state) {
-    // Instead of permanently deleting the profile, let's just set it to
-    // disabled so that we preserve the order references.
-    /** @var \Drupal\Profile\Entity\ProfileInterface $entity */
-    $entity = $this->getEntity();
-
-    $entity->setActive(FALSE);
-    $entity->save();
-    $form_state->setRedirectUrl($this->getRedirectUrl());
-
-    drupal_set_message($this->getDeletionMessage());
-    $this->logDeletionMessage();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  protected function getDeletionMessage() {
-    $entity = $this->getEntity();
-    return $this->t('%label has been deleted.', [
-      '%label' => $entity->label(),
-    ]);
   }
 
   /**
