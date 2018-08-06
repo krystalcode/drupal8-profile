@@ -178,11 +178,12 @@ class ProfileListBuilder extends EntityListBuilder {
     $profile_type = $profile_type_storage->load($entity->bundle());
     /** @var \Drupal\Core\Session\AccountInterface $account */
     $account = $this->currentUser;
-    $own_any = ($account->id() === $entity->getOwnerId()) ? 'own' : 'any';
+    $is_owner = $account->id() === $entity->getOwnerId();
 
     // If we the profile is enabled.
     if ($entity->isActive()) {
-      if ($account->hasPermission("unpublish $own_any {$profile_type->id()} profile")) {
+      if (($account->hasPermission("unpublish any {$profile_type->id()} profile"))
+      || ($account->hasPermission("unpublish own {$profile_type->id()} profile") && $is_owner)) {
         // Display an unpublish button.
         $operations['unpublish'] = [
           'title' => $profile_type->getUnpublishLabel(),
@@ -202,7 +203,8 @@ class ProfileListBuilder extends EntityListBuilder {
     }
     // Else, if the profile is not enabled.
     else {
-      if ($account->hasPermission("publish $own_any {$profile_type->id()} profile")) {
+      if (($account->hasPermission("publish any {$profile_type->id()} profile"))
+        || ($account->hasPermission("publish own {$profile_type->id()} profile") && $is_owner)) {
         // Display a publish button.
         $operations['publish'] = [
           'title' => $profile_type->getPublishLabel(),

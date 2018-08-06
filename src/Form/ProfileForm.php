@@ -32,14 +32,15 @@ class ProfileForm extends ContentEntityForm {
       array_unshift($element['set_default']['#submit'], [$this, 'setDefault']);
     }
 
-    // Add a unpublish button if the profile is active.
+    // Add an unpublish button if the profile is active.
     /** @var \Drupal\Core\Session\AccountInterface $account */
     if (!$profile->isNew()) {
       $account = \Drupal::currentUser();
-      $own_any = ($account->id() === $profile->getOwnerId()) ? 'own' : 'any';
+      $is_owner = $account->id() === $profile->getOwnerId();
 
       if ($profile->isActive()) {
-        if ($account->hasPermission("unpublish $own_any {$profile_type->id()} profile")) {
+        if (($account->hasPermission("unpublish any {$profile_type->id()} profile"))
+          || ($account->hasPermission("unpublish own {$profile_type->id()} profile") && $is_owner)) {
           $element['unpublish'] = [
             '#type' => 'link',
             '#title' => $profile_type->getUnpublishLabel(),
@@ -53,9 +54,10 @@ class ProfileForm extends ContentEntityForm {
           ];
         }
       }
-      // Else, if the profile is in-active, add an publish button.
+      // Else, if the profile is in-active, add a publish button.
       else {
-        if ($account->hasPermission("publish $own_any {$profile_type->id()} profile")) {
+        if (($account->hasPermission("publish any {$profile_type->id()} profile"))
+          || ($account->hasPermission("publish own {$profile_type->id()} profile") && $is_owner)) {
           $element['publish'] = [
             '#type' => 'link',
             '#title' => $profile_type->getPublishLabel(),
