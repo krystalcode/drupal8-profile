@@ -1,4 +1,4 @@
 # Schema for the views plugins of the Profile module.
-views.field.activate_deactivate_profile_link:
-  type: views.field.activate_deactivate_profile_link
-  label: 'Link to activate/deactivate user profile'
+views.field.switch_profile_status_link:
+  type: views.field.switch_profile_status_link
+  label: 'Link to switch profile status'

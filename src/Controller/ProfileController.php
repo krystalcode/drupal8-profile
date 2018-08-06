@@ -176,46 +176,4 @@ class ProfileController extends ControllerBase implements ContainerInjectionInte
     return $this->redirect($url->getRouteName(), $url->getRouteParameters(), $url->getOptions());
   }
 
-  /**
-   * Set profile status to enabled.
-   *
-   * @param \Drupal\Core\Routing\RouteMatchInterface $routeMatch
-   *   The route match.
-   *
-   * @return \Symfony\Component\HttpFoundation\RedirectResponse
-   *   A redirect back to the currency listing.
-   */
-  public function activate(RouteMatchInterface $routeMatch) {
-    /** @var \Drupal\profile\Entity\ProfileInterface $profile */
-    $profile = $routeMatch->getParameter('profile');
-    $profile->setActive(TRUE);
-    $profile->save();
-
-    drupal_set_message($this->t('The %label profile has been activated.', ['%label' => $profile->label()]));
-
-    $url = $profile->toUrl('collection');
-    return $this->redirect($url->getRouteName(), $url->getRouteParameters(), $url->getOptions());
-  }
-
-  /**
-   * Set profile status to disabled.
-   *
-   * @param \Drupal\Core\Routing\RouteMatchInterface $routeMatch
-   *   The route match.
-   *
-   * @return \Symfony\Component\HttpFoundation\RedirectResponse
-   *   A redirect back to the currency listing.
-   */
-  public function deactivate(RouteMatchInterface $routeMatch) {
-    /** @var \Drupal\profile\Entity\ProfileInterface $profile */
-    $profile = $routeMatch->getParameter('profile');
-    $profile->setActive(FALSE);
-    $profile->save();
-
-    drupal_set_message($this->t('The %label profile has been deactivated.', ['%label' => $profile->label()]));
-
-    $url = $profile->toUrl('collection');
-    return $this->redirect($url->getRouteName(), $url->getRouteParameters(), $url->getOptions());
-  }
-
 }

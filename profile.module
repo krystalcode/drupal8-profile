@@ -365,11 +365,11 @@ function profile_views_data_alter(&$data) {
     'field' => 'uid',
   ];
 
-  $data['profile']['profile_activate_deactivate_link'] = [
+  $data['profile']['switch_profile_status_link'] = [
     'field' => [
-      'title' => t('Activate/Deactivate Profile'),
-      'help' => t('Set the status of this profile to enabled/disabled depending on current status.'),
-      'id' => 'profile_activate_deactivate_link',
+      'title' => t('Switch Profile Status'),
+      'help' => t('Switch the publication status of this profile.'),
+      'id' => 'switch_profile_status_link',
     ],
   ];
 }

@@ -11,6 +11,9 @@ use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Render\RendererInterface;
 use Drupal\Core\Routing\RedirectDestinationInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Url;
+
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -49,6 +52,13 @@ class ProfileListBuilder extends EntityListBuilder {
   protected $entityTypeManager;
 
   /**
+   * Current user object.
+   *
+   * @var \Drupal\Core\Session\AccountInterface
+   */
+  protected $currentUser;
+
+  /**
    * Constructs a new ProfileListController object.
    *
    * @param \Drupal\Core\Entity\EntityTypeInterface $entity_type
@@ -61,8 +71,10 @@ class ProfileListBuilder extends EntityListBuilder {
    *   The renderer.
    * @param \Drupal\Core\Routing\RedirectDestinationInterface $redirect_destination
    *   The redirect destination service.
-   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entityTypeManager
+   * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
    *   The entity type manager.
+   * @param \Drupal\Core\Session\AccountInterface $current_user
+   *   Current user.
    */
   public function __construct(
     EntityTypeInterface $entity_type,
@@ -70,14 +82,16 @@ class ProfileListBuilder extends EntityListBuilder {
     DateFormatter $date_formatter,
     RendererInterface $renderer,
     RedirectDestinationInterface $redirect_destination,
-    EntityTypeManagerInterface $entityTypeManager
+    EntityTypeManagerInterface $entity_type_manager,
+    AccountInterface $current_user
   ) {
     parent::__construct($entity_type, $storage);
 
     $this->dateFormatter = $date_formatter;
     $this->renderer = $renderer;
     $this->redirectDestination = $redirect_destination;
-    $this->entityTypeManager = $entityTypeManager;
+    $this->entityTypeManager = $entity_type_manager;
+    $this->currentUser = $current_user;
   }
 
   /**
@@ -90,7 +104,8 @@ class ProfileListBuilder extends EntityListBuilder {
       $container->get('date.formatter'),
       $container->get('renderer'),
       $container->get('redirect.destination'),
-      $container->get('entity_type.manager')
+      $container->get('entity_type.manager'),
+      $container->get('current_user')
     );
   }
 
@@ -158,44 +173,49 @@ class ProfileListBuilder extends EntityListBuilder {
     /** @var \Drupal\profile\Entity\ProfileInterface $entity */
     $operations = parent::getOperations($entity);
 
-    $destination = $this->redirectDestination->getAsArray();
-    foreach ($operations as $key => $operation) {
-      $operations[$key]['query'] = $destination;
-    }
-
     $profile_type_storage = $this->entityTypeManager->getStorage('profile_type');
     /** @var \Drupal\profile\Entity\ProfileTypeInterface $profile_type */
     $profile_type = $profile_type_storage->load($entity->bundle());
     /** @var \Drupal\Core\Session\AccountInterface $account */
-    $account = \Drupal::currentUser();
+    $account = $this->currentUser;
     $own_any = ($account->id() === $entity->getOwnerId()) ? 'own' : 'any';
-    if ($account->hasPermission("activate/deactivate $own_any {$profile_type->id()} profile")) {
-      // If we the profile is enabled.
-      if ($entity->isActive()) {
-        // Display a deactivate button.
-        $operations['deactivate'] = [
-          'title' => $profile_type->getDeactivateProfileButtonLabel(),
-          'url' => $entity->toUrl('deactivate'),
-          'parameter' => $entity,
-        ];
 
-        if (!$entity->isDefault()) {
-          $operations['set_default'] = [
-            'title' => $this->t('Mark as default'),
-            'url' => $entity->toUrl('set-default'),
-            'parameter' => $entity,
-          ];
-        }
+    // If we the profile is enabled.
+    if ($entity->isActive()) {
+      if ($account->hasPermission("unpublish $own_any {$profile_type->id()} profile")) {
+        // Display an unpublish button.
+        $operations['unpublish'] = [
+          'title' => $profile_type->getUnpublishLabel(),
+          'url' => Url::fromRoute('entity.profile.unpublish', [
+            'profile' => $entity->id()
+          ]),
+        ];
       }
-      // Else, if the profile is not enabled.
-      else {
-        // Display an activate button.
-        $operations['activate'] = [
-          'title' => $profile_type->getActivateProfileButtonLabel(),
-          'url' => $entity->toUrl('activate'),
+
+      if (!$entity->isDefault()) {
+        $operations['set_default'] = [
+          'title' => $this->t('Mark as default'),
+          'url' => $entity->toUrl('set-default'),
           'parameter' => $entity,
         ];
       }
+    }
+    // Else, if the profile is not enabled.
+    else {
+      if ($account->hasPermission("publish $own_any {$profile_type->id()} profile")) {
+        // Display a publish button.
+        $operations['publish'] = [
+          'title' => $profile_type->getPublishLabel(),
+          'url' => Url::fromRoute('entity.profile.publish', [
+            'profile' => $entity->id()
+          ]),
+        ];
+      }
+    }
+
+    $destination = $this->redirectDestination->getAsArray();
+    foreach ($operations as $key => $operation) {
+      $operations[$key]['query'] = $destination;
     }
 
     return $operations;

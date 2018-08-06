@@ -3,7 +3,7 @@
 namespace Drupal\profile;
 
 use Drupal\Core\Entity\EntityTypeInterface;
-use Drupal\entity\EntityPermissionProvider;
+use Drupal\entity\UncacheableEntityPermissionProvider;
 
 /**
  * Providers Profile entity permissions.
@@ -11,7 +11,7 @@ use Drupal\entity\EntityPermissionProvider;
  * Extends the Entity API permission provider to support bundle based view
  * permissions.
  */
-class ProfilePermissionProvider extends EntityPermissionProvider {
+class ProfilePermissionProvider extends UncacheableEntityPermissionProvider {
 
   /**
    * {@inheritdoc}
@@ -23,26 +23,27 @@ class ProfilePermissionProvider extends EntityPermissionProvider {
     $bundles = $this->entityTypeBundleInfo->getBundleInfo($entity_type_id);
 
     foreach ($bundles as $bundle_name => $bundle_info) {
-      $permissions["view any {$bundle_name} {$entity_type_id}"] = [
-        'title' => $this->t('@bundle: View any @type', [
+      $permissions["publish any {$bundle_name} {$entity_type_id}"] = [
+        'title' => $this->t('@bundle: Publish any @type', [
           '@bundle' => $bundle_info['label'],
           '@type' => $singular_label,
         ]),
       ];
-      $permissions["view own {$bundle_name} {$entity_type_id}"] = [
-        'title' => $this->t('@bundle: View own @type', [
+      $permissions["publish own {$bundle_name} {$entity_type_id}"] = [
+        'title' => $this->t('@bundle: Publish own @type', [
           '@bundle' => $bundle_info['label'],
           '@type' => $singular_label,
         ]),
       ];
-      $permissions["activate/deactivate any {$bundle_name} {$entity_type_id}"] = [
-        'title' => $this->t('@bundle: Activate/Deactivate any @type', [
+
+      $permissions["unpublish any {$bundle_name} {$entity_type_id}"] = [
+        'title' => $this->t('@bundle: Unpublish any @type', [
           '@bundle' => $bundle_info['label'],
           '@type' => $singular_label,
         ]),
       ];
-      $permissions["activate/deactivate own {$bundle_name} {$entity_type_id}"] = [
-        'title' => $this->t('@bundle: Activate/Deactivate own @type', [
+      $permissions["unpublish own {$bundle_name} {$entity_type_id}"] = [
+        'title' => $this->t('@bundle: Unpublish own @type', [
           '@bundle' => $bundle_info['label'],
           '@type' => $singular_label,
         ]),

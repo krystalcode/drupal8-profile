@@ -83,20 +83,20 @@ class ProfileTypeForm extends BundleEntityFormBase {
       '#default_value' => $type->shouldCreateNewRevision(),
     ];
 
-    $form['activate_profile_button_label'] = [
+    $form['publish_label'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Activate profile button label value'),
-      '#default_value' => !empty($type->getActivateProfileButtonLabel())
-      ? $type->getActivateProfileButtonLabel()
-      : $this->t('Activate Profile'),
+      '#title' => $this->t('Publish profile button label value'),
+      '#default_value' => !empty($type->getPublishLabel())
+      ? $type->getPublishLabel()
+      : $this->t('Publish Profile'),
     ];
 
-    $form['deactivate_profile_button_label'] = [
+    $form['unpublish_label'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Activate profile button label value'),
-      '#default_value' => !empty($type->getDeactivateProfileButtonLabel())
-      ? $type->getDeactivateProfileButtonLabel()
-      : $this->t('Deactivate Profile'),
+      '#title' => $this->t('Unpublish profile button label value'),
+      '#default_value' => !empty($type->getUnpublishLabel())
+      ? $type->getUnpublishLabel()
+      : $this->t('Unpublish Profile'),
     ];
 
     return $this->protectBundleIdElement($form);

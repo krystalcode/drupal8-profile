@@ -37,12 +37,12 @@ profile.type.*:
     description:
       type: text
       label: 'Description'
-    activate_profile_button_label:
+    publish_label:
       type: text
-      label: 'Activate profile button label'
-    deactivate_profile_button_label:
+      label: 'Publish profile button label'
+    unpublish_label:
       type: text
-      label: 'Deactivate profile button label'
+      label: 'Unpublish profile button label'
 
 field.field.*.*.*.third_party.profile:
   type: mapping
@@ -56,10 +56,10 @@ action.configuration.profile_delete_action:
   type: action_configuration_default
   label: 'Delete profile configuration'
 
-action.configuration.profile_activate_action:
+action.configuration.profile_publish_action:
   type: action_configuration_default
-  label: 'Activate selected profile configuration'
+  label: 'Publish selected profile configuration'
 
-action.configuration.profile_deactivate_action:
+action.configuration.profile_unpublish_action:
   type: action_configuration_default
-  label: 'Deactivate selected profile configuration'
+  label: 'Unpublish selected profile configuration'

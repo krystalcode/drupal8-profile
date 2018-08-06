@@ -6,22 +6,22 @@ use Drupal\Core\Action\ActionBase;
 use Drupal\Core\Session\AccountInterface;
 
 /**
- * Activates/publishes a profile.
+ * Unpublishes a profile.
  *
  * @Action(
- *   id = "profile_activate_action",
- *   label = @Translation("Activate selected profile"),
+ *   id = "profile_unpublish_action",
+ *   label = @Translation("Unpublish selected profile"),
  *   type = "profile"
  * )
  */
-class ActivateProfile extends ActionBase {
+class UnpublishProfile extends ActionBase {
 
   /**
    * {@inheritdoc}
    */
   public function execute($entity = NULL) {
     /** @var \Drupal\profile\Entity\ProfileInterface $entity */
-    $entity->setActive(TRUE);
+    $entity->setActive(FALSE);
     $entity->save();
   }
 
@@ -30,10 +30,10 @@ class ActivateProfile extends ActionBase {
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     /** @var \Drupal\profile\Entity\ProfileInterface $object */
-    $result = $object->access('activate/deactivate', $account, TRUE)
+    $access = $object->access('unpublish', $account, TRUE)
       ->andIf($object->status->access('edit', $account, TRUE));
 
-    return $return_as_object ? $result : $result->isAllowed();
+    return $return_as_object ? $access : $access->isAllowed();
   }
 
 }

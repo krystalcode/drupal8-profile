@@ -19,14 +19,30 @@ interface ProfileTypeInterface extends ConfigEntityInterface, RevisionableEntity
   public function getRegistration();
 
   /**
-   * Return the activate button label.
+   * Return the publish button label.
    */
-  public function getActivateProfileButtonLabel();
+  public function getPublishLabel();
 
   /**
-   * Return the deactivate button label.
+   * Set the publish button label.
+   *
+   * @param string $publish_label
+   *   The publish label text.
    */
-  public function getDeactivateProfileButtonLabel();
+  public function setPublishLabel($publish_label);
+
+  /**
+   * Return the unpublish button label.
+   */
+  public function getUnpublishLabel();
+
+  /**
+   * Set the unpublish button label.
+   *
+   * @param string $unpublish_label
+   *   The unpublish label text.
+   */
+  public function setUnpublishLabel($unpublish_label);
 
   /**
    * Return the allow multiple flag.

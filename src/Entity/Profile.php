@@ -32,6 +32,8 @@ use Drupal\user\UserInterface;
  *       "add" = "Drupal\profile\Form\ProfileForm",
  *       "edit" = "Drupal\profile\Form\ProfileForm",
  *       "delete" = "Drupal\profile\Form\ProfileDeleteForm",
+ *       "publish" = "Drupal\profile\Form\ProfilePublishForm",
+ *       "unpublish" = "Drupal\profile\Form\ProfileUnpublishForm",
  *     },
  *     "route_provider" = {
  *       "html" = "Drupal\Core\Entity\Routing\DefaultHtmlRouteProvider",
@@ -55,8 +57,8 @@ use Drupal\user\UserInterface;
  *    "edit-form" = "/profile/{profile}/edit",
  *    "delete-form" = "/profile/{profile}/delete",
  *    "collection" = "/admin/config/people/profiles",
- *    "activate" = "/profile/{profile}/activate",
- *    "deactivate" = "/profile/{profile}/deactivate",
+ *    "publish-form" = "/profile/{profile}/publish",
+ *    "unpublish-form" = "/profile/{profile}/unpublish",
  *    "set-default" = "/profile/{profile}/set-default"
  *   },
  *   common_reference_target = TRUE,

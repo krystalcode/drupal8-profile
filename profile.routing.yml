@@ -66,24 +66,16 @@ entity.profile.set_default:
     _entity_access: 'profile.update'
     _csrf_token: 'TRUE'
 
-entity.profile.activate:
-  path: '/profile/{profile}/activate'
+entity.profile.publish:
+  path: '/profile/{profile}/publish'
   defaults:
-    _controller: '\Drupal\profile\Controller\ProfileController::activate'
-  options:
-    parameters:
-      profile:
-        type: entity:profile
+    _entity_form: 'profile.publish'
   requirements:
-    _entity_access: 'profile.activate/deactivate'
+    _entity_access: 'profile.publish'
 
-entity.profile.deactivate:
-  path: '/profile/{profile}/deactivate'
+entity.profile.unpublish:
+  path: '/profile/{profile}/unpublish'
   defaults:
-    _controller: '\Drupal\profile\Controller\ProfileController::deactivate'
-  options:
-    parameters:
-      profile:
-        type: entity:profile
+    _entity_form: 'profile.unpublish'
   requirements:
-    _entity_access: 'profile.activate/deactivate'
+    _entity_access: 'profile.unpublish'

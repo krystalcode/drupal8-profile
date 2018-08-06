@@ -3,7 +3,6 @@
 namespace Drupal\profile\Entity;
 
 use Drupal\Core\Config\Entity\ConfigEntityBundleBase;
-use Drupal\Core\Entity\EntityDescriptionInterface;
 use Drupal\Core\Entity\EntityStorageInterface;
 
 /**
@@ -42,8 +41,8 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *     "langcode",
  *     "use_revisions",
  *     "description",
- *     "activate_profile_button_label",
- *     "deactivate_profile_button_label"
+ *     "publish_label",
+ *     "unpublish_label"
  *   },
  *   links = {
  *     "add-form" = "/admin/config/people/profiles/add",
@@ -85,18 +84,18 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
   protected $description;
 
   /**
-   * Activate button label.
+   * Publish button label.
    *
    * @var string
    */
-  protected $activate_profile_button_label;
+  protected $publish_label;
 
   /**
-   * De-activate button label.
+   * Unpublish button label.
    *
    * @var string
    */
-  protected $deactivate_profile_button_label;
+  protected $unpublish_label;
 
   /**
    * Whether the profile type is shown during registration.
@@ -218,29 +217,29 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
   /**
    * {@inheritdoc}
    */
-  public function getActivateProfileButtonLabel() {
-    return $this->activate_profile_button_label;
+  public function getPublishLabel() {
+    return $this->publish_label;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setActivateProfileButtonLabel($activate_button_label) {
-    return $this->activate_profile_button_label = $activate_button_label;
+  public function setPublishLabel($publish_label) {
+    return $this->publish_label = $publish_label;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function getDeactivateProfileButtonLabel() {
-    return $this->deactivate_profile_button_label;
+  public function getUnpublishLabel() {
+    return $this->unpublish_label;
   }
 
   /**
    * {@inheritdoc}
    */
-  public function setDeactivateProfileButtonLabel($deactivate_button_label) {
-    return $this->deactivate_profile_button_label = $deactivate_button_label;
+  public function setUnpublishLabel($unpublish_label) {
+    return $this->unpublish_label = $unpublish_label;
   }
 
   /**

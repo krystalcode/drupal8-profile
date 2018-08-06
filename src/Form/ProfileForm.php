@@ -3,8 +3,8 @@
 namespace Drupal\profile\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
-use Drupal\Core\Entity\RevisionableEntityBundleInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Form controller for profile forms.
@@ -32,27 +32,40 @@ class ProfileForm extends ContentEntityForm {
       array_unshift($element['set_default']['#submit'], [$this, 'setDefault']);
     }
 
-    // Add a de-activate button if the profile is active.
+    // Add a unpublish button if the profile is active.
     /** @var \Drupal\Core\Session\AccountInterface $account */
     if (!$profile->isNew()) {
       $account = \Drupal::currentUser();
       $own_any = ($account->id() === $profile->getOwnerId()) ? 'own' : 'any';
-      if ($account->hasPermission("activate/deactivate $own_any {$profile_type->id()} profile")) {
-        if ($profile->isActive()) {
-          $element['deactivate'] = [
-            '#type' => 'submit',
-            '#value' => $profile_type->getDeactivateProfileButtonLabel(),
-            '#submit' => ['::deactivate'],
+
+      if ($profile->isActive()) {
+        if ($account->hasPermission("unpublish $own_any {$profile_type->id()} profile")) {
+          $element['unpublish'] = [
+            '#type' => 'link',
+            '#title' => $profile_type->getUnpublishLabel(),
+            '#url' => Url::fromRoute('entity.profile.unpublish', [
+              'profile' => $profile->id()
+            ]),
             '#weight' => '10',
+            '#attributes' => [
+              'class' => ['button'],
+            ],
           ];
         }
-        // Else, if the profile is in-active, add an activate button.
-        else {
-          $element['activate'] = [
-            '#type' => 'submit',
-            '#value' => $profile_type->getActivateProfileButtonLabel(),
-            '#submit' => ['::activate'],
+      }
+      // Else, if the profile is in-active, add an publish button.
+      else {
+        if ($account->hasPermission("publish $own_any {$profile_type->id()} profile")) {
+          $element['publish'] = [
+            '#type' => 'link',
+            '#title' => $profile_type->getPublishLabel(),
+            '#url' => Url::fromRoute('entity.profile.publish', [
+              'profile' => $profile->id()
+            ]),
             '#weight' => '10',
+            '#attributes' => [
+              'class' => ['button'],
+            ],
           ];
         }
       }
@@ -71,40 +84,6 @@ class ProfileForm extends ContentEntityForm {
    */
   public function setDefault(array $form, FormStateInterface $form_state) {
     $form_state->setValue('is_default', TRUE);
-  }
-
-  /**
-   * Form submission handler for the 'activate' action.
-   *
-   * @param array $form
-   *   An associative array containing the structure of the form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   A reference to a keyed array containing the current state of the form.
-   */
-  public function activate(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\profile\Entity\ProfileInterface $profile */
-    $profile = $this->entity;
-    $profile->setActive(TRUE);
-    $profile->save();
-
-    drupal_set_message($this->t('The %label profile has been activated.', ['%label' => $profile->label()]));
-  }
-
-  /**
-   * Form submission handler for the 'deactivate' action.
-   *
-   * @param array $form
-   *   An associative array containing the structure of the form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   A reference to a keyed array containing the current state of the form.
-   */
-  public function deactivate(array $form, FormStateInterface $form_state) {
-    /** @var \Drupal\profile\Entity\ProfileInterface $profile */
-    $profile = $this->entity;
-    $profile->setActive(FALSE);
-    $profile->save();
-
-    drupal_set_message($this->t('The %label profile has been deactivated.', ['%label' => $profile->label()]));
   }
 
   /**
