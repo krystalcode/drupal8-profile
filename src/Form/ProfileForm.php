@@ -35,41 +35,34 @@ class ProfileForm extends ContentEntityForm {
     // Add an unpublish button if the profile is active.
     /** @var \Drupal\Core\Session\AccountInterface $account */
     if (!$profile->isNew()) {
-      $account = \Drupal::currentUser();
-      $is_owner = $account->id() === $profile->getOwnerId();
-
       if ($profile->isActive()) {
-        if (($account->hasPermission("unpublish any {$profile_type->id()} profile"))
-          || ($account->hasPermission("unpublish own {$profile_type->id()} profile") && $is_owner)) {
-          $element['unpublish'] = [
-            '#type' => 'link',
-            '#title' => $profile_type->getUnpublishLabel(),
-            '#url' => Url::fromRoute('entity.profile.unpublish', [
-              'profile' => $profile->id()
-            ]),
-            '#weight' => '10',
-            '#attributes' => [
-              'class' => ['button'],
-            ],
-          ];
-        }
+        $element['unpublish'] = [
+          '#type' => 'link',
+          '#title' => $profile_type->getUnpublishLabel(),
+          '#url' => Url::fromRoute('entity.profile.unpublish', [
+            'profile' => $profile->id(),
+          ]),
+          '#weight' => 10,
+          '#attributes' => [
+            'class' => ['button'],
+          ],
+          '#access' => $profile->access('unpublish'),
+        ];
       }
       // Else, if the profile is in-active, add a publish button.
       else {
-        if (($account->hasPermission("publish any {$profile_type->id()} profile"))
-          || ($account->hasPermission("publish own {$profile_type->id()} profile") && $is_owner)) {
-          $element['publish'] = [
-            '#type' => 'link',
-            '#title' => $profile_type->getPublishLabel(),
-            '#url' => Url::fromRoute('entity.profile.publish', [
-              'profile' => $profile->id()
-            ]),
-            '#weight' => '10',
-            '#attributes' => [
-              'class' => ['button'],
-            ],
-          ];
-        }
+        $element['publish'] = [
+          '#type' => 'link',
+          '#title' => $profile_type->getPublishLabel(),
+          '#url' => Url::fromRoute('entity.profile.publish', [
+            'profile' => $profile->id(),
+          ]),
+          '#weight' => 10,
+          '#attributes' => [
+            'class' => ['button'],
+          ],
+          '#access' => $profile->access('publish'),
+        ];
       }
     }
 

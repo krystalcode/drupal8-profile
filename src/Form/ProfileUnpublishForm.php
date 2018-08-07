@@ -4,6 +4,7 @@ namespace Drupal\profile\Form;
 
 use Drupal\Core\Entity\ContentEntityConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Provides a confirmation form for un-publishing a profile entity.
@@ -30,7 +31,13 @@ class ProfileUnpublishForm extends ContentEntityConfirmFormBase {
    * {@inheritdoc}
    */
   public function getCancelUrl() {
-    return $this->entity->toUrl('collection');
+    /** @var \Drupal\profile\Entity\ProfileInterface $profile */
+    $profile = $this->entity;
+
+    return Url::fromRoute('entity.profile.type.user_profile_form', [
+      'user' => $profile->getOwnerId(),
+      'profile_type' => $profile->bundle(),
+    ]);
   }
 
   /**
@@ -43,9 +50,10 @@ class ProfileUnpublishForm extends ContentEntityConfirmFormBase {
     $profile = $this->entity;
 
     if (!$profile->isActive()) {
-      return $this->messenger()->addWarning($this->t('The profile %label is already unpublished.', [
+      $this->messenger()->addWarning($this->t('The profile %label is already unpublished.', [
         '%label' => $profile->label(),
       ]));
+      return;
     }
 
     $form['#title'] = $this->getQuestion();
@@ -73,7 +81,7 @@ class ProfileUnpublishForm extends ContentEntityConfirmFormBase {
     $this->messenger()->addMessage($this->t('The profile %label has been un-published.', [
       '%label' => $profile->label(),
     ]));
-    $form_state->setRedirectUrl($profile->toUrl('collection'));
+    $form_state->setRedirectUrl($this->getCancelUrl());
   }
 
 }
