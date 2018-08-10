@@ -104,8 +104,6 @@ class EntityTypeInfo implements ContainerInjectionInterface {
 
     // Display an unpublish button.
     if ($entity->access('unpublish')) {
-      /** @var \Drupal\profile\Entity\ProfileInterface $entity */
-
       $profile_type_storage = $this->entityTypeManager->getStorage('profile_type');
       /** @var \Drupal\profile\Entity\ProfileTypeInterface $profile_type */
       $profile_type = $profile_type_storage->load($entity->bundle());
@@ -139,8 +137,6 @@ class EntityTypeInfo implements ContainerInjectionInterface {
     }
 
     if ($entity->access('publish')) {
-      /** @var \Drupal\profile\Entity\ProfileInterface $entity */
-
       $profile_type_storage = $this->entityTypeManager->getStorage('profile_type');
       /** @var \Drupal\profile\Entity\ProfileTypeInterface $profile_type */
       $profile_type = $profile_type_storage->load($entity->bundle());
