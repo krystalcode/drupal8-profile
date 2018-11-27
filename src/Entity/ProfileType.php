@@ -40,7 +40,9 @@ use Drupal\Core\Entity\EntityStorageInterface;
  *     "status",
  *     "langcode",
  *     "use_revisions",
- *     "description"
+ *     "description",
+ *     "publish_label",
+ *     "unpublish_label"
  *   },
  *   links = {
  *     "add-form" = "/admin/config/people/profiles/add",
@@ -80,6 +82,20 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
    * @var string
    */
   protected $description;
+
+  /**
+   * Publish button label.
+   *
+   * @var string
+   */
+  protected $publish_label;
+
+  /**
+   * Unpublish button label.
+   *
+   * @var string
+   */
+  protected $unpublish_label;
 
   /**
    * Whether the profile type is shown during registration.
@@ -196,6 +212,34 @@ class ProfileType extends ConfigEntityBundleBase implements ProfileTypeInterface
   public function setDescription($description) {
     $this->description = $description;
     return $this;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getPublishLabel() {
+    return $this->publish_label;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setPublishLabel($publish_label) {
+    return $this->publish_label = $publish_label;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function getUnpublishLabel() {
+    return $this->unpublish_label;
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUnpublishLabel($unpublish_label) {
+    return $this->unpublish_label = $unpublish_label;
   }
 
   /**

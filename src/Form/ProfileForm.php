@@ -4,6 +4,7 @@ namespace Drupal\profile\Form;
 
 use Drupal\Core\Entity\ContentEntityForm;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Url;
 
 /**
  * Form controller for profile forms.
@@ -31,6 +32,40 @@ class ProfileForm extends ContentEntityForm {
       array_unshift($element['set_default']['#submit'], [$this, 'setDefault']);
     }
 
+    // Add an unpublish button if the profile is active.
+    /** @var \Drupal\Core\Session\AccountInterface $account */
+    if (!$profile->isNew()) {
+      if ($profile->isActive()) {
+        $element['unpublish'] = [
+          '#type' => 'link',
+          '#title' => $profile_type->getUnpublishLabel(),
+          '#url' => Url::fromRoute('entity.profile.unpublish', [
+            'profile' => $profile->id(),
+          ]),
+          '#weight' => 10,
+          '#attributes' => [
+            'class' => ['button'],
+          ],
+          '#access' => $profile->access('unpublish'),
+        ];
+      }
+      // Else, if the profile is in-active, add a publish button.
+      else {
+        $element['publish'] = [
+          '#type' => 'link',
+          '#title' => $profile_type->getPublishLabel(),
+          '#url' => Url::fromRoute('entity.profile.publish', [
+            'profile' => $profile->id(),
+          ]),
+          '#weight' => 10,
+          '#attributes' => [
+            'class' => ['button'],
+          ],
+          '#access' => $profile->access('publish'),
+        ];
+      }
+    }
+
     return $element;
   }
 
@@ -47,18 +82,6 @@ class ProfileForm extends ContentEntityForm {
   }
 
   /**
-   * Form submission handler for the 'deactivate' action.
-   *
-   * @param array $form
-   *   An associative array containing the structure of the form.
-   * @param \Drupal\Core\Form\FormStateInterface $form_state
-   *   A reference to a keyed array containing the current state of the form.
-   */
-  public function deactivate(array $form, FormStateInterface $form_state) {
-    $form_state->setValue('status', FALSE);
-  }
-
-  /**
    * {@inheritdoc}
    */
   public function buildEntity(array $form, FormStateInterface $form_state) {
@@ -67,7 +90,8 @@ class ProfileForm extends ContentEntityForm {
 
     // Mark a new revision if the profile type enforces revisions.
     /** @var \Drupal\profile\Entity\ProfileTypeInterface $profile_type */
-    $profile_type = $this->entityTypeManager->getStorage('profile_type')->load($entity->bundle());
+    $profile_type = $this->entityTypeManager->getStorage('profile_type')
+      ->load($entity->bundle());
     $entity->setNewRevision($profile_type->shouldCreateNewRevision());
 
     return $entity;
@@ -79,11 +103,13 @@ class ProfileForm extends ContentEntityForm {
   public function save(array $form, FormStateInterface $form_state) {
     switch ($this->entity->save()) {
       case SAVED_NEW:
-        drupal_set_message($this->t('%label has been created.', ['%label' => $this->entity->label()]));
+        drupal_set_message($this->t('%label has been created.',
+          ['%label' => $this->entity->label()]));
         break;
 
       case SAVED_UPDATED:
-        drupal_set_message($this->t('%label has been updated.', ['%label' => $this->entity->label()]));
+        drupal_set_message($this->t('%label has been updated.',
+          ['%label' => $this->entity->label()]));
         break;
     }
 

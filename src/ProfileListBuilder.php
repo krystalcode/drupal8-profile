@@ -52,7 +52,13 @@ class ProfileListBuilder extends EntityListBuilder {
    * @param \Drupal\Core\Render\RendererInterface $renderer
    *   The renderer.
    */
-  public function __construct(EntityTypeInterface $entity_type, EntityStorageInterface $storage, DateFormatter $date_formatter, RendererInterface $renderer, RedirectDestinationInterface $redirect_destination) {
+  public function __construct(
+    EntityTypeInterface $entity_type,
+    EntityStorageInterface $storage,
+    DateFormatter $date_formatter,
+    RendererInterface $renderer,
+    RedirectDestinationInterface $redirect_destination
+  ) {
     parent::__construct($entity_type, $storage);
 
     $this->dateFormatter = $date_formatter;
@@ -139,14 +145,6 @@ class ProfileListBuilder extends EntityListBuilder {
     $destination = $this->redirectDestination->getAsArray();
     foreach ($operations as $key => $operation) {
       $operations[$key]['query'] = $destination;
-    }
-
-    if ($entity->isActive() && !$entity->isDefault()) {
-      $operations['set_default'] = [
-        'title' => $this->t('Mark as default'),
-        'url' => $entity->toUrl('set-default'),
-        'parameter' => $entity,
-      ];
     }
 
     return $operations;

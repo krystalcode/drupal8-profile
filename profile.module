@@ -6,20 +6,22 @@
  */
 
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Field\FieldDefinitionInterface;
-use Drupal\Core\Field\FieldItemListInterface;
-use Drupal\Core\Render\Element;
-use Drupal\Core\Session\AccountInterface;
-use Drupal\user\UserInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
 use Drupal\Core\Entity\Entity\EntityFormDisplay;
 use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Field\FieldDefinitionInterface;
+use Drupal\Core\Field\FieldItemListInterface;
+use Drupal\Core\Form\FormStateInterface;
+use Drupal\Core\Render\Element;
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\Core\Session\AccountInterface;
+use Drupal\Core\Url;
+use Drupal\field\FieldConfigInterface;
+use Drupal\user\UserInterface;
+
 use Drupal\profile\Entity\Profile;
 use Drupal\profile\Entity\ProfileType;
-use Drupal\field\FieldConfigInterface;
-use Drupal\Core\Routing\RouteMatchInterface;
-use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Url;
+use Drupal\profile\EntityTypeInfo;
 
 /**
  * Implements hook_help().
@@ -364,6 +366,14 @@ function profile_views_data_alter(&$data) {
     'base field' => 'uid',
     'field' => 'uid',
   ];
+
+  $data['profile']['switch_profile_status_link'] = [
+    'field' => [
+      'title' => t('Switch Profile Status'),
+      'help' => t('Switch the publication status of this profile.'),
+      'id' => 'switch_profile_status_link',
+    ],
+  ];
 }
 
 /**
@@ -383,4 +393,17 @@ function profile_theme_suggestions_profile(array $variables) {
   $suggestions[] = $original . '__' . $entity->id() . '__' . $sanitized_view_mode;
 
   return $suggestions;
+}
+
+/**
+ * Implements hook_entity_operation().
+ */
+function profile_entity_operation(EntityInterface $entity) {
+  if ($entity->getEntityTypeId() !== 'profile') {
+    return;
+  }
+
+  return \Drupal::service('class_resolver')
+    ->getInstanceFromDefinition(EntityTypeInfo::class)
+    ->entityOperation($entity);
 }

@@ -30,7 +30,7 @@ class PublishProfile extends ActionBase {
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     /** @var \Drupal\profile\Entity\ProfileInterface $object */
-    $result = $object->access('update', $account, TRUE)
+    $result = $object->access('publish', $account, TRUE)
       ->andIf($object->status->access('edit', $account, TRUE));
 
     return $return_as_object ? $result : $result->isAllowed();

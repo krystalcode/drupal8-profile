@@ -65,3 +65,17 @@ entity.profile.set_default:
   requirements:
     _entity_access: 'profile.update'
     _csrf_token: 'TRUE'
+
+entity.profile.publish:
+  path: '/profile/{profile}/publish'
+  defaults:
+    _entity_form: 'profile.publish'
+  requirements:
+    _entity_access: 'profile.publish'
+
+entity.profile.unpublish:
+  path: '/profile/{profile}/unpublish'
+  defaults:
+    _entity_form: 'profile.unpublish'
+  requirements:
+    _entity_access: 'profile.unpublish'

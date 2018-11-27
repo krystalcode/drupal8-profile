@@ -37,6 +37,12 @@ profile.type.*:
     description:
       type: text
       label: 'Description'
+    publish_label:
+      type: text
+      label: 'Publish profile button label'
+    unpublish_label:
+      type: text
+      label: 'Unpublish profile button label'
 
 field.field.*.*.*.third_party.profile:
   type: mapping

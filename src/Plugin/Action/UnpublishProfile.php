@@ -30,7 +30,7 @@ class UnpublishProfile extends ActionBase {
    */
   public function access($object, AccountInterface $account = NULL, $return_as_object = FALSE) {
     /** @var \Drupal\profile\Entity\ProfileInterface $object */
-    $access = $object->access('update', $account, TRUE)
+    $access = $object->access('unpublish', $account, TRUE)
       ->andIf($object->status->access('edit', $account, TRUE));
 
     return $return_as_object ? $access : $access->isAllowed();
